@@ -128,3 +128,6 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Character.ai 디렉토리 무시
+src/python/Character.ai/
