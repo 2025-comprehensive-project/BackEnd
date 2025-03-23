@@ -75,7 +75,7 @@ def generate_response(user_prompt, min_length=80, max_length=200):
         temperature=0.7,  # ✅ 응답의 예측성을 높여 안정적인 답변 유도
         repetition_penalty=1.3,  # ✅ 반복 방지
         no_repeat_ngram_size=3,  # ✅ 3단어 이상 반복 방지
-        early_stopping=True,  
+        early_stopping=False,  
         pad_token_id=tokenizer.eos_token_id
     )
 
