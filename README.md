@@ -1,9 +1,3 @@
-
----
-
-## ✅ 현재 디렉토리 기준 새로운 `README.md`
-
-```md
 # 🍸 Flapper Moonshine - Backend
 
 **Flapper Moonshine**은 1930년대 금주법 이후 시대의 가상 도시를 배경으로  
