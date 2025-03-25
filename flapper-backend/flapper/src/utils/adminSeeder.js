@@ -1,7 +1,9 @@
 require('dotenv').config();
-const db = require('../src/config/dbConnect');
+const db = require('../config/dbConnect');
 const bcrypt = require('bcrypt');
 const readline = require('readline');
+
+console.log(process.env.DB_USER);
 
 // 🔹 터미널 입력을 위한 인터페이스 설정
 const rl = readline.createInterface({

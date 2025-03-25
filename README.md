@@ -1,7 +1,15 @@
+
+---
+
+## ✅ 현재 디렉토리 기준 새로운 `README.md`
+
+```md
 # 🍸 Flapper Moonshine - Backend
 
-이 프로젝트는 1920~30년대 금주법 시대를 배경으로 한 칵테일 바 운영 게임인 **Flapper Moonshine**의 백엔드 시스템입니다.  
-사용자와 NPC 간의 AI 대화를 기반으로 칵테일 제조, 평판 점수, 챗봇 학습 등을 포함한 기능을 제공합니다.
+**Flapper Moonshine**은 1930년대 금주법 이후 시대의 가상 도시를 배경으로  
+칵테일 바를 운영하며 다양한 NPC와 AI 기반 대화를 나누는 **서사형 시뮬레이션 게임**입니다.
+
+본 레포지토리는 게임의 백엔드 서버로, **유저 관리, 관리자 기능, AI 챗봇 응답 및 학습 자동화**까지 포함됩니다.
 
 ---
 
@@ -9,99 +17,141 @@
 
 ```
 flapper-backend/
-├── admin-server/         # 관리자 웹 서버 (Express.js + React)
-├── ai-trainer-server/    # AI 챗봇 학습 서버 (Python + FastAPI)
-├── ai-service-server/    # AI 챗봇 응답/서비스 서버
-├── data/                 # 데이터셋, SQL, 전처리된 CSV 등
-├── notebooks/            # 데이터 분석 및 전처리 Jupyter Notebook
-└── README.md             # 이 문서
+├── flapper/                 # 사용자 서비스 및 관리자 API (Node.js)
+│   ├── db/                  # SQL 및 초기 데이터베이스 파일
+│   └── src/
+│       ├── auth/            # OAuth, 인증 관련 컨트롤러
+│       ├── config/          # DB 연결 등 환경설정
+│       ├── controllers/     # 라우팅 로직 처리
+│       │   ├── admin/       # 관리자 전용 컨트롤러
+│       │   └── user/        # 유저 전용 컨트롤러
+│       ├── middlewares/     # 인증, 검증 미들웨어
+│       ├── models/          # DB 모델 (필요 시 사용)
+│       ├── routes/          # 라우팅 설정
+│       │   ├── admin/       # 관리자 API 라우터
+│       │   └── user/        # 유저 API 라우터
+│       ├── services/        # 비즈니스 로직 처리 계층
+│       ├── utils/           # JWT, 로깅, OAuth 설정 등 유틸
+│       ├── app.js           # Express 앱 설정
+│       └── server.js        # 서버 실행 진입점
+│
+├── neo-ai/                  # AI 챗봇 모델 및 학습 서버
+│   ├── ai-service/          # Flask 기반 TinyLlama 응답 서버
+│   └── ai-trainer/          # 전이학습 / 파인튜닝 자동화 서버
+│
+├── data/                    # 학습용 데이터셋 및 SQL
+├── notebooks/               # 데이터 분석 / 전처리용 Jupyter 노트북
+└── README.md                # 본 문서
 ```
 
 ---
 
-## 🧠 시스템 구성 요약
+## 🧠 시스템 구성
 
 | 구성 요소 | 역할 |
 |-----------|------|
-| **Admin Server** | 관리자 전용 웹 UI 및 백오피스 API 제공 |
-| **AI Trainer Server** | NPC 챗봇 학습 처리, 버전 관리 |
-| **AI Service Server** | 사용자와의 대화 처리, 유저별 AI 응답 제공 |
-| **Data/Notebooks** | 칵테일, NPC, 대화 데이터 전처리 및 분석 |
+| **flapper/** | Node.js 기반의 메인 백엔드 서버. 유저 관리, 로그인, NPC 요청 전달 등 |
+| **neo-ai/ai-service** | TinyLlama 챗봇 응답 생성 서버 (Flask 기반) |
+| **neo-ai/ai-trainer** | 학습 자동화 및 챗봇 파인튜닝 서버 |
+| **data/** | SQL 및 학습용 대화 데이터 |
+| **notebooks/** | 데이터 전처리 및 시각화, 분석 |
 
 ---
 
 ## 🛠 기술 스택
 
-### 공통
-- MariaDB (데이터베이스)
-- JWT (토큰 기반 인증)
-- RESTful API
-
-### 서버별 스택
-| 서버 | 언어 | 프레임워크 |
-|------|------|------------|
-| `admin-server` | JavaScript | Node.js, Express, (React for frontend) |
-| `ai-trainer-server` | Python | FastAPI, PyTorch |
-| `ai-service-server` | Python or Node.js | FastAPI or Express |
+- **Node.js + Express**: API 서버 (유저/관리자)
+- **Python + Flask**: 챗봇 응답 서버
+- **FastAPI (예정)**: 챗봇 학습 트리거 및 스케줄링
+- **MariaDB**: 유저, 레시피, 대화 로그 저장소
+- **Redis**: 유저별 세션 저장소 (AI 대화 컨텍스트)
+- **PyTorch + HuggingFace Transformers**: 챗봇 모델 학습
+- **JWT**: 인증 및 권한 관리
+- **Google OAuth**: 유저 로그인 인증
 
 ---
 
-## 🧪 로컬 개발 환경 실행
+## 🚀 실행 방법
+
+### 1. 환경 변수 설정
+
+`.env` 파일을 `flapper/` 디렉토리에 생성:
+
+```env
+DB_HOST=localhost
+DB_USER=flapper
+DB_PASSWORD=your_password
+DB_NAME=Flapper_Moonshine
+
+GOOGLE_CLIENT_ID=your_google_client_id
+JWT_SECRET=your_jwt_secret
+```
+
+---
+
+### 2. 개발 서버 실행
 
 ```bash
-# 1. 관리자 서버 실행
-cd admin-server
+# flapper 백엔드 서버 실행
+cd flapper
 npm install
-node server.js
+npm run dev  # nodemon 사용 시
 
-# 2. AI 학습 서버 실행
-cd ai-trainer-server
-python main.py
+# AI 챗봇 응답 서버 실행
+cd ../neo-ai/ai-service
+python tinyllama_server.py
 
-# 3. AI 서비스 서버 실행
-cd ai-service-server
-node server.js  # 또는 python main.py
+# AI 트레이너 서버 실행
+cd ../ai-trainer
+python train_launcher.py
 ```
 
 ---
 
-## 🗃 데이터 디렉토리
+## 🗃 데이터 구조 요약
 
+- `user`: 유저 기본 정보 및 게임 진행 상태
+- `cocktail_recipe`: 칵테일 레시피 및 맛/향 점수
+- `dialog_log`: 유저-NPC 간 대화 로그
+- `training_sessions`: 학습 큐 관리 테이블
+
+---
+
+## 🔄 학습 파이프라인
+
+```text
+[대화 로그 DB]
+   ↓
+[admin에서 학습 요청]
+   ↓
+[ai-trainer가 감지 → 학습용 jsonl 추출 → 학습 진행]
+   ↓
+[최신 모델 → ai-service에 배포]
 ```
-data/
-├── raw/          # 원본 데이터셋 (CSV, JSON 등)
-├── processed/    # 전처리된 CSV
-├── sql/          # SQL INSERT 파일
-└── README.md     # 데이터 설명 문서
-```
-
-모든 데이터 전처리는 `notebooks/` 디렉토리 내 Jupyter Notebook을 통해 진행됩니다.
 
 ---
 
-## 👤 관리자 계정
+## ✨ 향후 확장
 
-- 초기 관리자 계정은 `Flapper_Moonshine.sql`에 포함되어 있습니다.
-- 비밀번호는 해시 처리되어 저장되며, 관리자 페이지에서 로그인 가능합니다.
-
----
-
-## 📦 향후 확장 예정
-
-- 유저별 AI 학습 자동화
-- 대화 기록 기반 추천 시스템
-- 챗봇 버전 롤백 및 비교 기능
+- NPC 개별 챗봇 → 유저별 전이학습
+- 관리자 UI에서 대화 로그 조회 및 학습 트리거
+- 챗봇 성능 평가 기능 도입 (BLEU, perplexity 등)
+- Docker 컨테이너화 및 AWS 배포
 
 ---
 
-## 🙋‍♂️ 개발자 정보
+## 👤 개발자 정보
 
-- **백엔드 설계 및 구현**: 최재인
-- **DB 설계 및 데이터셋 정제**: 최재인
-- **AI 챗봇 학습 구조 기획**: 최재인
+- **Backend 설계 및 구현**: 최재인
+- **AI 챗봇 아키텍처 및 학습 설계**: 최재인
+- **DB 및 칵테일 맛/향 점수 설계**: 최재인
 
 ---
 
 ## 📄 라이선스
 
-본 프로젝트는 개인 및 학술 연구 목적으로만 사용되며, 상업적 사용은 금지됩니다.
+본 프로젝트는 개인 연구 및 학습용으로만 사용됩니다.  
+상업적 이용은 허가되지 않으며, 추후 별도 라이선스를 명시할 예정입니다.
+```
+
+---

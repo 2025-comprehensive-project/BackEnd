@@ -1,9 +1,9 @@
-const db = require('../config/dbConnect');
+const db = require('../../config/dbConnect');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // 🔹 관리자 로그인
-const loginAdmin = async (req, res) => {
+const adminLogin = async (req, res) => {
     const { email, password } = req.body;
     try {
         // 입력한 이메일이 DB에 존재하는지 확인
@@ -24,7 +24,7 @@ const loginAdmin = async (req, res) => {
         const token = jwt.sign(
             { admin_id: admin.admin_id, email: admin.email }, 
             process.env.JWT_SECRET, 
-            { expiresIn: '1h' } // 토큰 만료 시간 설정
+            { expiresIn: '2h' } // 토큰 만료 시간 설정
         );
 
         res.json({ token, message: 'Login successful' });
@@ -34,4 +34,4 @@ const loginAdmin = async (req, res) => {
     }
 };
 
-module.exports = { loginAdmin };
+module.exports = { adminLogin };
