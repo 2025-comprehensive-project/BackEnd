@@ -142,6 +142,30 @@ python train_launcher.py
 
 ---
 
+## 📚 Dataset Overview
+
+본 프로젝트에서 사용된 AI 학습용 대화 데이터셋은 다음과 같습니다:
+
+### 1. **KoAlpaca v1.1**
+- **설명**: 한국어로 instruction-tuning이 가능한 Alpaca 스타일 대화 데이터셋입니다.
+- **형식**: `{ "instruction": ..., "input": ..., "output": ... }`
+- **출처**: [beomi/KoAlpaca](https://github.com/beomi/KoAlpaca)  
+- **라이선스**: CC BY-NC 4.0 (비상업적 사용에 한해 자유롭게 이용 가능)
+
+### 2. **Kakao 대화 데이터셋**
+- **설명**: 한국어 일상 대화 형식의 커스텀 데이터셋으로, 유저와 시스템 간 대화를 LoRA 학습 포맷에 맞게 재구성하였습니다.
+- **형식**: `{ "messages": [ { "role": "user", "content": ... }, { "role": "assistant", "content": ... } ] }`
+- **출처**: [Ludobico/KakaoChatData](https://github.com/Ludobico/KakaoChatData/tree/main)
+
+---
+
+## 🔁 전처리 방식
+- KoAlpaca는 `instruction + output`을 기반으로 `messages` 형식으로 변환
+- Kakao 데이터는 기존 형식에서 LoRA 학습용 JSONL로 재구성
+- 데이터 병합 후 학습용/검증용 세트로 무작위 분할 (`train.jsonl`, `valid.jsonl`)
+
+---
+
 ## 📄 라이선스
 
 본 프로젝트는 개인 연구 및 학습용으로만 사용됩니다.  
