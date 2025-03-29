@@ -1,4 +1,4 @@
-const db = require('../../config/dbConnect');
+const db = require('../../../config/dbConnect');
 
 // 🔹 모든 칵테일 조회
 const getAllCocktails = async (req, res) => {
