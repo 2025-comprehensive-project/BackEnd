@@ -1,5 +1,5 @@
 // src/controllers/admin/userController.js
-const db = require('../../config/dbConnect');
+const db = require('../../../../src/config/dbConnect');
 
 // 🔹 유저 정보 조회 (GET /api/admin/users/:user_id)
 const getUserInfo = async (req, res) => {
