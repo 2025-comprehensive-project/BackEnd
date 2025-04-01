@@ -23,6 +23,21 @@ CREATE TABLE user (
     signature_cocktail_id INT DEFAULT NULL
 );
 
+-- 유저 세이브 슬롯 테이블
+CREATE TABLE user_save (
+    save_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    play_time INT DEFAULT 0,
+    chapter INT DEFAULT 1,
+    money INT DEFAULT 0,
+    reputation_score INT DEFAULT 0,
+    saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(user_id, slot_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
 -- 재료 테이블
 CREATE TABLE ingredient (
     ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,21 +80,6 @@ CREATE TABLE cocktail_recipe (
     FOREIGN KEY (ingredient2_id) REFERENCES ingredient(ingredient_id),
     FOREIGN KEY (ingredient3_id) REFERENCES ingredient(ingredient_id),
     FOREIGN KEY (ingredient4_id) REFERENCES ingredient(ingredient_id)
-);
-
--- 유저 세이브 슬롯 테이블
-CREATE TABLE user_save (
-    save_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    slot_id INT NOT NULL,
-    play_time INT DEFAULT 0,
-    chapter INT DEFAULT 1,
-    money INT DEFAULT 0,
-    reputation_score INT DEFAULT 0,
-    saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE(user_id, slot_id),
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
 -- 대화 로그 테이블
@@ -132,20 +132,6 @@ CREATE TABLE chatbot_state (
 );
 
 -- 외래키 연결 (user → cocktail_recipe)
-ALTER TABLE user
-ADD CONSTRAINT fk_user_signature_cocktail
-FOREIGN KEY (signature_cocktail_id) REFERENCES cocktail_recipe(recipe_id) ON DELETE SET NULL;
-
--- 외래키 연결 (cocktail_recipe → user)
-ALTER TABLE cocktail_recipe
-ADD CONSTRAINT fk_recipe_creator
-FOREIGN KEY (creator_id) REFERENCES user(user_id) ON DELETE SET NULL;
-
--- DB 계정 생성 및 권한 부여
-CREATE USER 'flapper'@'localhost' IDENTIFIED BY 'flapper123!';
-GRANT ALL PRIVILEGES ON Flapper_Moonshine.* TO 'flapper'@'localhost';
-FLUSH PRIVILEGES;
-pe)
 ALTER TABLE user
 ADD CONSTRAINT fk_user_signature_cocktail
 FOREIGN KEY (signature_cocktail_id) REFERENCES cocktail_recipe(recipe_id) ON DELETE SET NULL;
