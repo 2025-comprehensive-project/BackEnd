@@ -67,6 +67,28 @@ CREATE TABLE cocktail_recipe (
     FOREIGN KEY (ingredient4_id) REFERENCES ingredient(ingredient_id)
 );
 
+ALTER TABLE ingredient
+CHANGE COLUMN flavor_category note_category ENUM(
+    'Citrus', 'Berry', 'Tropical', 'Nutty',
+    'Sweet', 'Coffee', 'Herbal', 'Creamy'
+) NOT NULL;
+
+SELECT * FROM ingredient;
+
+CREATE TABLE garnish_type (
+    garnish_id INT AUTO_INCREMENT PRIMARY KEY,
+    name_kr VARCHAR(50) NOT NULL,     -- 예: "레몬 필"
+    note_category ENUM(
+        'Citrus', 'Berry', 'Tropical', 'Nutty',
+        'Sweet', 'Coffee', 'Herbal', 'Creamy'
+    ) NOT NULL
+);
+
+ALTER TABLE cocktail_recipe
+ADD COLUMN garnish_id INT DEFAULT NULL,
+ADD CONSTRAINT fk_garnish_type
+    FOREIGN KEY (garnish_id) REFERENCES garnish_type(garnish_id);
+
 -- 유저 세이브 슬롯 테이블
 CREATE TABLE user_save (
     save_id INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS Flapper_Moonshine;
+
 -- DATABASE: Flapper_Moonshine
 CREATE DATABASE Flapper_Moonshine;
 USE Flapper_Moonshine;
@@ -14,13 +16,76 @@ CREATE TABLE admin (
 CREATE TABLE user (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     google_sub VARCHAR(255) NOT NULL UNIQUE,
-    
     email VARCHAR(255),
     name VARCHAR(100),
     profile_image TEXT,
     registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
     signature_cocktail_id INT DEFAULT NULL
+);
+
+-- 노트 카테고리 테이블
+CREATE TABLE note_category (
+    note_category_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE  -- 예: Citrus, Herbal 등
+);
+
+-- 재료 테이블
+CREATE TABLE ingredient (
+    ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    sweetness TINYINT NOT NULL,
+    sourness TINYINT NOT NULL,
+    bitterness TINYINT NOT NULL,
+    abv INT NOT NULL
+);
+
+-- 재료와 향미를 연결하는 다대다 관계 테이블
+CREATE TABLE ingredient_note (
+    ingredient_id INT NOT NULL,
+    note_category_id INT NOT NULL,
+    PRIMARY KEY (ingredient_id, note_category_id),
+    FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id) ON DELETE CASCADE,
+    FOREIGN KEY (note_category_id) REFERENCES note_category(note_category_id) ON DELETE CASCADE
+);
+
+-- 가니시 테이블
+CREATE TABLE garnish_type (
+    garnish_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    note_category_id INT NOT NULL,
+
+    FOREIGN KEY (note_category_id) REFERENCES note_category(note_category_id) ON DELETE RESTRICT
+);
+
+-- 칵테일 레시피 테이블
+CREATE TABLE cocktail_recipe (
+    recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+
+    ingredient1_id INT NOT NULL,
+    ingredient1_amount VARCHAR(50) NOT NULL,
+    ingredient2_id INT,
+    ingredient2_amount VARCHAR(50),
+    ingredient3_id INT,
+    ingredient3_amount VARCHAR(50),
+    ingredient4_id INT,
+    ingredient4_amount VARCHAR(50),
+    garnish_id INT DEFAULT NULL,
+    method ENUM('shake', 'stir') NOT NULL,
+    ice_in_shake BOOLEAN DEFAULT NULL,
+    is_on_the_rocks BOOLEAN DEFAULT FALSE,
+    glass_type ENUM('long_drink', 'on_the_rocks', 'margarita', 'martini', 'sour', 'coupe') NOT NULL,
+    abv INT,
+
+    summary TEXT,
+    creator_id INT DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (ingredient1_id) REFERENCES ingredient(ingredient_id),
+    FOREIGN KEY (ingredient2_id) REFERENCES ingredient(ingredient_id),
+    FOREIGN KEY (ingredient3_id) REFERENCES ingredient(ingredient_id),
+    FOREIGN KEY (ingredient4_id) REFERENCES ingredient(ingredient_id),
+    FOREIGN KEY (garnish_id) REFERENCES garnish_type(garnish_id)
 );
 
 -- 유저 세이브 슬롯 테이블
@@ -38,99 +103,6 @@ CREATE TABLE user_save (
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
--- 재료 테이블
-CREATE TABLE ingredient (
-    ingredient_id INT AUTO_INCREMENT PRIMARY KEY,
-    name_kr VARCHAR(255) NOT NULL UNIQUE,
-    sweetness TINYINT NOT NULL,
-    sourness TINYINT NOT NULL,
-    bitterness TINYINT NOT NULL,
-    flavor_category ENUM(
-        'Citrus', 'Berry', 'Tropical', 'Nutty',
-        'Sweet', 'Coffee', 'Herbal', 'Creamy'
-    ) NOT NULL,
-    abv INT NOT NULL
-);
-
--- 칵테일 레시피 테이블
-CREATE TABLE cocktail_recipe (
-    recipe_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-
-    ingredient1_id INT NOT NULL,
-    ingredient1_amount VARCHAR(50) NOT NULL,
-    ingredient2_id INT,
-    ingredient2_amount VARCHAR(50),
-    ingredient3_id INT,
-    ingredient3_amount VARCHAR(50),
-    ingredient4_id INT,
-    ingredient4_amount VARCHAR(50),
-
-    method ENUM('shake', 'stir') NOT NULL,
-    ice_in_shake BOOLEAN DEFAULT NULL,
-    is_on_the_rocks BOOLEAN DEFAULT FALSE,
-    glass_type ENUM('long_drink', 'on_the_rocks', 'margarita', 'martini', 'sour', 'coupe') NOT NULL,
-    abv INT,
-
-    summary TEXT,
-    creator_id INT DEFAULT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (ingredient1_id) REFERENCES ingredient(ingredient_id),
-    FOREIGN KEY (ingredient2_id) REFERENCES ingredient(ingredient_id),
-    FOREIGN KEY (ingredient3_id) REFERENCES ingredient(ingredient_id),
-    FOREIGN KEY (ingredient4_id) REFERENCES ingredient(ingredient_id)
-);
-
--- 대화 로그 테이블
-CREATE TABLE user_dialog_logs (
-    log_id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id VARCHAR(64) NOT NULL,
-    user_id INT NOT NULL,
-    slot_id INT NOT NULL,
-    npc_id VARCHAR(100) NOT NULL,
-    speaker ENUM('user', 'npc') NOT NULL,
-    message TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    emotion_tag VARCHAR(50),
-    is_training_data BOOLEAN DEFAULT TRUE,
-    version_tag VARCHAR(50),
-
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
-
--- 챗봇 학습 세션 테이블
-CREATE TABLE training_sessions (
-    session_id VARCHAR(64) PRIMARY KEY,
-    user_id INT NOT NULL,
-    slot_id INT NOT NULL,
-    npc_id VARCHAR(100) NOT NULL,
-    base_model_version VARCHAR(50),
-    new_model_version VARCHAR(50),
-    started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    finished_at DATETIME,
-    status ENUM('queued', 'training', 'done', 'failed') DEFAULT 'queued',
-    notes TEXT,
-
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
-);
-
--- 챗봇 상태 테이블
-CREATE TABLE chatbot_state (
-    state_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    slot_id INT NOT NULL,
-    npc_id VARCHAR(100) NOT NULL,
-    
-    memory JSON DEFAULT NULL,
-    version_tag VARCHAR(50),
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    UNIQUE(user_id, slot_id, npc_id),
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
-);
-
 -- 외래키 연결 (user → cocktail_recipe)
 ALTER TABLE user
 ADD CONSTRAINT fk_user_signature_cocktail
@@ -141,7 +113,8 @@ ALTER TABLE cocktail_recipe
 ADD CONSTRAINT fk_recipe_creator
 FOREIGN KEY (creator_id) REFERENCES user(user_id) ON DELETE SET NULL;
 
--- DB 계정 생성 및 권한 부여
-CREATE USER 'flapper'@'localhost' IDENTIFIED BY 'flapper123!';
-GRANT ALL PRIVILEGES ON Flapper_Moonshine.* TO 'flapper'@'localhost';
-FLUSH PRIVILEGES;
+
+
+-- 아직 유저 다이어로그, 트레이닝 세션, 챗봇 상태 안넣음. 
+
+
