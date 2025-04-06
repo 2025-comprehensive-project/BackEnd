@@ -47,6 +47,9 @@ INSERT INTO ingredient (name, sweetness, sourness, bitterness, abv) VALUES
 ('우유', 4, 0, 0, 0),
 ('탄산수', 0, 0, 0, 0);
 
+INSERT INTO ingredient (name, sweetness, sourness, bitterness, abv) VALUES
+('그레나딘 시럽', 5, 2, 0, 0);
+
 -- 기주에 향미 추가
 INSERT INTO ingredient_note (ingredient_id, note_category_id) VALUES
 (1, 1), (1, 3),     -- 진: Spirit + Herbal
@@ -77,6 +80,9 @@ INSERT INTO ingredient_note (ingredient_id, note_category_id) VALUES
 (23, 3),                  -- 비터스: Herbal
 (24, 11),                 -- 우유: Plain
 (25, 11);                 -- 탄산수: Plain
+
+INSERT INTO ingredient_note (ingredient_id, note_category_id) VALUES
+(26, 4), (26, 6);         -- 그레나딘 시럽: Berry, Sweet
 
 -- 가니시 추가
 INSERT INTO garnish_type (name, note_category_id) VALUES

@@ -95,6 +95,7 @@ CREATE TABLE user_save (
     slot_id INT NOT NULL,
     play_time INT DEFAULT 0,
     chapter INT DEFAULT 1,
+    in_game_day INT,
     money INT DEFAULT 0,
     reputation_score INT DEFAULT 0,
     saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -102,6 +103,20 @@ CREATE TABLE user_save (
     UNIQUE(user_id, slot_id),
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
+
+-- 유저 별 해금된 재료 저장 테이블
+CREATE TABLE unlocked_ingredient (
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    ingredient_id INT NOT NULL,
+    PRIMARY KEY (user_id, slot_id, ingredient_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
+);
+
+-- ALTER 버전
+ALTER TABLE user_save
+ADD COLUMN in_game_day INT;
 
 -- 외래키 연결 (user → cocktail_recipe)
 ALTER TABLE user

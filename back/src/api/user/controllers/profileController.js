@@ -1,6 +1,6 @@
 // src/api/user/controllers/profileController.js
 
-const db = require('../../../utils/dbConnect');
+const db = require('../../../config/dbConnect');
 
 module.exports = {
   // 자신의 프로필 보기

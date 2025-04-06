@@ -24,7 +24,7 @@ const adminLogin = async (req, res) => {
         const token = jwt.sign(
             { admin_id: admin.admin_id, email: admin.email }, 
             process.env.JWT_SECRET, 
-            { expiresIn: '2h' } // 토큰 만료 시간 설정
+            { expiresIn: '4h' } // 토큰 만료 시간 설정
         );
 
         res.json({ token, message: 'Login successful' });

@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 
 const apiRoutes = require('./api');  // ✅ 라우트 통합 포인트
-const errorHandler = require('./middlewares/errorHandler');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 

@@ -1,5 +1,14 @@
 use Flapper_Moonshine;
 
+-- 1. 유저(flappe‌r) 다시 생성
+CREATE USER IF NOT EXISTS 'flapper'@'localhost' IDENTIFIED BY 'flapper123!';
+
+GRANT ALL PRIVILEGES ON Flapper_Moonshine.* TO 'flapper'@'localhost';
+FLUSH PRIVILEGES;
+
+SELECT User, Host FROM mysql.user WHERE User = 'flapper';
+
+
 # 유저 세이브 파일 별 대화 로그 조회, slot_id 수정
 
 SELECT *
@@ -85,3 +94,9 @@ LEFT JOIN ingredient i4 ON cr.ingredient4_id = i4.ingredient_id
 LEFT JOIN garnish_type g ON cr.garnish_id = g.garnish_id
 ORDER BY cr.name COLLATE utf8mb4_unicode_ci;
 
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE cocktail_recipe;
+SET FOREIGN_KEY_CHECKS = 1;
+
+SELECT * FROM cocktail_recipe
+ORDER BY recipe_id asc;
