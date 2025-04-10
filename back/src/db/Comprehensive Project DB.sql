@@ -167,7 +167,6 @@ FOREIGN KEY (creator_id) REFERENCES user(user_id) ON DELETE SET NULL;
 CREATE USER 'flapper'@'localhost' IDENTIFIED BY 'flapper123!';
 GRANT ALL PRIVILEGES ON Flapper_Moonshine.* TO 'flapper'@'localhost';
 FLUSH PRIVILEGES;
-pe)
 ALTER TABLE user
 ADD CONSTRAINT fk_user_signature_cocktail
 FOREIGN KEY (signature_cocktail_id) REFERENCES cocktail_recipe(recipe_id) ON DELETE SET NULL;

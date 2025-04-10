@@ -26,6 +26,7 @@ const getAllCocktails = async (req, res) => {
         cr.glass_type,
         cr.abv,
         cr.summary,
+        cr.comments,
         cr.creator_id,
         cr.created_at
 
@@ -74,6 +75,7 @@ const getCocktailById = async (req, res) => {
         cr.glass_type,
         cr.abv,
         cr.summary,
+        cr.comments,
         cr.creator_id,
         cr.created_at
 
@@ -111,7 +113,8 @@ const addCocktail = async (req, res) => {
     method,
     glass_type,
     abv,
-    summary
+    summary,
+    comments
   } = req.body;
 
   try {
@@ -122,15 +125,15 @@ const addCocktail = async (req, res) => {
          ingredient2_id, ingredient2_amount,
          ingredient3_id, ingredient3_amount,
          ingredient4_id, ingredient4_amount,
-         garnish_id, method, glass_type, abv, summary)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         garnish_id, method, glass_type, abv, summary, comments)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         ingredient1_id, ingredient1_amount,
         ingredient2_id, ingredient2_amount,
         ingredient3_id, ingredient3_amount,
         ingredient4_id, ingredient4_amount,
-        garnish_id, method, glass_type, abv, summary
+        garnish_id, method, glass_type, abv, summary, comments
       ]
     );
 
@@ -154,7 +157,8 @@ const updateCocktail = async (req, res) => {
     method,
     glass_type,
     abv,
-    summary
+    summary,
+    comments
   } = req.body;
 
   try {
@@ -166,7 +170,7 @@ const updateCocktail = async (req, res) => {
         ingredient3_id = ?, ingredient3_amount = ?,
         ingredient4_id = ?, ingredient4_amount = ?,
         garnish_id = ?,
-        method = ?, glass_type = ?, abv = ?, summary = ?
+        method = ?, glass_type = ?, abv = ?, summary = ?, comments = ?
        WHERE recipe_id = ?`,
       [
         name,
@@ -174,7 +178,7 @@ const updateCocktail = async (req, res) => {
         ingredient2_id, ingredient2_amount,
         ingredient3_id, ingredient3_amount,
         ingredient4_id, ingredient4_amount,
-        garnish_id, method, glass_type, abv, summary,
+        garnish_id, method, glass_type, abv, summary, comments,
         recipe_id
       ]
     );

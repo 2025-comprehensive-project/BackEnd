@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const adminAuth = require('../../../middleware/adminAuth');
+const adminAuth = require('../../middleware/adminAuth');
 const {
   getIngredients,
   getGarnishes,
   getNoteCategories,
   getIngredientById 
-} = require('../controllers/metaController');
+} = require('./metaController');
 
-//router.use(adminAuth);
+router.use(adminAuth);
 
 router.get('/ingredients', getIngredients);
 router.get('/ingredients/:ingredient_id', getIngredientById );

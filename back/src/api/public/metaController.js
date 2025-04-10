@@ -1,4 +1,4 @@
-const db = require('../../../config/dbConnect');
+const db = require('../../config/dbConnect');
 
 // 재료 목록
 // 재료 목록 (설명 포함)

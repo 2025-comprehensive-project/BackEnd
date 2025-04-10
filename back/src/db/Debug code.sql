@@ -64,6 +64,17 @@ JOIN
 ORDER BY 
     g.garnish_id;
 
+-- 레시피 초기화
+-- 1. 외래키 제약 조건 비활성화
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 2. 테이블 초기화
+TRUNCATE TABLE cocktail_recipe;
+
+-- 3. 외래키 제약 조건 다시 활성화
+SET FOREIGN_KEY_CHECKS = 1;
+
+
 
 -- 레시피 확인 JOIN 문
 SELECT 
@@ -100,3 +111,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 SELECT * FROM cocktail_recipe
 ORDER BY recipe_id asc;
+
+UPDATE cocktail_recipe
+SET ingredient1_id = 3
+WHERE name = '코스모폴리탄';
+
+
+
+
