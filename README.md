@@ -16,25 +16,74 @@
 ## 📁 프로젝트 구조
 
 ```
-flapper-backend/
-├── flapper/               # 메인 백엔드 서버 (Node.js + Express)
-│   ├── src/
-│   │   ├── config/        # 환경 설정 (DB, Redis)
-│   │   ├── routes/        # 관리자 & 유저 API 라우터
-│   │   ├── controllers/   # 실제 요청 핸들러
-│   │   ├── middlewares/   # 인증, 에러 핸들링
-│   │   ├── utils/         # 유틸 함수, 로거, 에러 생성기 등
-│   │   ├── app.js         # Express 설정
-│   │   └── server.js      # 서버 실행 진입점
-│   └── db/                # SQL 및 초기 seed 데이터
+back/
+├── data/                            # 학습용 데이터셋, SQL 파일 등
 │
-├── neo-ai/                # AI 챗봇 시스템
-│   ├── ai-service/        # Flask 기반 응답 서버
-│   └── ai-trainer/        # 학습 파이프라인 서버
+├── notebooks/                       # 분석 및 전처리용 Jupyter 노트북
 │
-├── data/                  # 대화 로그 및 학습용 데이터셋
-├── notebooks/             # 전처리, 분석용 Jupyter 노트북
+├── src/                             # Node.js 기반 백엔드 서버
+│   ├── ai/                          # AI 연동 기능
+│   │   └── chatbotProxy.js          # Flask 챗봇 응답 서버 프록시 호출
+│
+│   ├── api/                         # REST API 라우터 및 컨트롤러
+│   │   ├── admin/                   # 관리자 API
+│   │   │   ├── controllers/
+│   │   │   │   ├── aiController.js
+│   │   │   │   ├── cocktailController.js
+│   │   │   │   ├── loginController.js
+│   │   │   │   ├── metaController.js
+│   │   │   │   └── userController.js
+│   │   │   └── routes/
+│   │   │       ├── aiRoutes.js
+│   │   │       ├── cocktailRoutes.js
+│   │   │       ├── metaRoutes.js
+│   │   │       └── userRoutes.js
+│   │   │
+│   │   └── user/                    # 유저 API
+│   │       ├── controllers/
+│   │       │   ├── ingredientController.js
+│   │       │   ├── npcController.js
+│   │       │   ├── profileController.js
+│   │       │   └── saveController.js
+│   │       └── routes/
+│   │           ├── ingredientRoutes.js
+│   │           ├── npcRoutes.js
+│   │           ├── profileRoutes.js
+│   │           └── saveRoutes.js
+│
+│   ├── config/                      # 환경 설정
+│   │   ├── dbConnect.js             # MariaDB 연결
+│   │   └── redisClient.js           # Redis 연결
+│
+│   ├── db/                          # SQL 및 시드 파일
+│   │   ├── schema.sql
+│   │   ├── seed.sql
+│   │   ├── insert_cocktail_recipe.sql
+│   │   └── 기타 삽입용 SQL 파일들
+│
+│   ├── middleware/                 # 공통 미들웨어
+│   │   ├── adminAuth.js            # 관리자 JWT 인증
+│   │   ├── errorHandler.js         # 에러 핸들러
+│   │   └── googleAuth.js           # Google OAuth 관련
+│
+│   ├── services/                   # 서비스 레이어
+│   │   ├── chatService.js
+│   │   └── trainerService.js
+│
+│   ├── utils/                      # 유틸 함수
+│   │   ├── adminSeeder.js
+│   │   ├── errorCreator.js
+│   │   └── logger.js
+│
+│   ├── app.js                      # Express 앱 초기화
+│   └── server.js                   # 서버 실행 진입점
+│
+├── .env                            # 환경 변수 설정 파일
+├── .gitignore
+├── package.json
+├── package-lock.json
 └── README.md
+
 ```
 
 ---
