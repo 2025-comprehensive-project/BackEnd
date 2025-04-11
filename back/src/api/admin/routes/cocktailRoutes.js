@@ -2,7 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const adminAuth = require('../../../middleware/adminAuth');
+
+const adminAuth = require('../../../middlewares/adminAuth'); // JWT 인증 미들웨어
 const {
   getAllCocktails,
   getCocktailById,

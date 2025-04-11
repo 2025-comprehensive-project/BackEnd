@@ -11,7 +11,7 @@ const {
 
 router.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱, !!!디버깅용!!!
 
-const adminAuth = require('../../../middleware/adminAuth'); // JWT 인증 미들웨어
+const adminAuth = require('../../../middlewares/adminAuth'); // JWT 인증 미들웨어
 
 // 로그인
 // POST /api/admin/login
@@ -30,7 +30,7 @@ router.patch('/password', adminAuth, changePassword);
 router.get('/info', adminAuth, getAdminInfo);
 
 // 비밀번호 찾기 (메일 발송)
-// POST /api/admin/login/forgot-password
+// POST /api/admin/forgot-password
 router.post('/forgot-password', sendPasswordResetLink);
 
 // 비밀번호 재설정 (메일 링크 클릭 후, 현재 프론트 페이지가 없어 디버깅용으로 GET 요청을 사용함)
