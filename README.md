@@ -1,144 +1,158 @@
-# 🍸 Flapper Moonshine - Backend
-
-**Flapper Moonshine**은 1930년대 금주법 이후 시대의 가상 도시를 배경으로  
-칵테일 바를 운영하며 다양한 NPC와 AI 기반 대화를 나누는 **서사형 시뮬레이션 게임**입니다.
-
-본 레포지토리는 게임의 백엔드 서버로, **유저 관리, 관리자 기능, AI 챗봇 응답 및 학습 자동화**까지 포함됩니다.
+좋아, 최신 프로젝트 구조와 컨벤션에 맞춰 README를 리팩토링할게. 아래는 수정된 버전이야. 내용 검토 후 수정하거나 추가하고 싶은 부분 알려줘.
 
 ---
 
-## 📁 디렉토리 구조
+# 🍸 Flapper Moonshine - Backend
+
+**Flapper Moonshine**은 1930년대 금주법 이후의 가상 도시에서  
+칵테일 바를 운영하며 다양한 NPC와 AI 기반 대화를 나누는  
+**서사 중심 시뮬레이션 게임**입니다.
+
+이 레포지토리는 게임의 **백엔드 서버**로,  
+유저 관리 / 관리자 기능 / 칵테일 시스템 / AI 챗봇 응답 및 학습 자동화까지 포함합니다.
+
+---
+
+## 📁 프로젝트 구조
 
 ```
 flapper-backend/
-├── flapper/                 # 사용자 서비스 및 관리자 API (Node.js)
-│   ├── db/                  # SQL 및 초기 데이터베이스 파일
-│   └── src/
-│       ├── auth/            # OAuth, 인증 관련 컨트롤러
-│       ├── config/          # DB 연결 등 환경설정
-│       ├── controllers/     # 라우팅 로직 처리
-│       │   ├── admin/       # 관리자 전용 컨트롤러
-│       │   └── user/        # 유저 전용 컨트롤러
-│       ├── middlewares/     # 인증, 검증 미들웨어
-│       ├── models/          # DB 모델 (필요 시 사용)
-│       ├── routes/          # 라우팅 설정
-│       │   ├── admin/       # 관리자 API 라우터
-│       │   └── user/        # 유저 API 라우터
-│       ├── services/        # 비즈니스 로직 처리 계층
-│       ├── utils/           # JWT, 로깅, OAuth 설정 등 유틸
-│       ├── app.js           # Express 앱 설정
-│       └── server.js        # 서버 실행 진입점
+├── flapper/               # 메인 백엔드 서버 (Node.js + Express)
+│   ├── src/
+│   │   ├── config/        # 환경 설정 (DB, Redis)
+│   │   ├── routes/        # 관리자 & 유저 API 라우터
+│   │   ├── controllers/   # 실제 요청 핸들러
+│   │   ├── middlewares/   # 인증, 에러 핸들링
+│   │   ├── utils/         # 유틸 함수, 로거, 에러 생성기 등
+│   │   ├── app.js         # Express 설정
+│   │   └── server.js      # 서버 실행 진입점
+│   └── db/                # SQL 및 초기 seed 데이터
 │
-├── neo-ai/                  # AI 챗봇 모델 및 학습 서버
-│   ├── ai-service/          # Flask 기반 TinyLlama 응답 서버
-│   └── ai-trainer/          # 전이학습 / 파인튜닝 자동화 서버
+├── neo-ai/                # AI 챗봇 시스템
+│   ├── ai-service/        # Flask 기반 응답 서버
+│   └── ai-trainer/        # 학습 파이프라인 서버
 │
-├── data/                    # 학습용 데이터셋 및 SQL
-├── notebooks/               # 데이터 분석 / 전처리용 Jupyter 노트북
-└── README.md                # 본 문서
+├── data/                  # 대화 로그 및 학습용 데이터셋
+├── notebooks/             # 전처리, 분석용 Jupyter 노트북
+└── README.md
 ```
 
 ---
 
 ## 🧠 시스템 구성
 
-| 구성 요소 | 역할 |
-|-----------|------|
-| **flapper/** | Node.js 기반의 메인 백엔드 서버. 유저 관리, 로그인, NPC 요청 전달 등 |
-| **neo-ai/ai-service** | TinyLlama 챗봇 응답 생성 서버 (Flask 기반) |
-| **neo-ai/ai-trainer** | 학습 자동화 및 챗봇 파인튜닝 서버 |
-| **data/** | SQL 및 학습용 대화 데이터 |
-| **notebooks/** | 데이터 전처리 및 시각화, 분석 |
+| 구성 요소 | 설명 |
+|----------|------|
+| `flapper/` | 메인 백엔드 서버, 관리자 API 및 유저 API 제공 |
+| `neo-ai/ai-service` | NPC 챗봇 응답 처리 서버 (TinyLlama 기반) |
+| `neo-ai/ai-trainer` | 대화 로그 기반 LoRA 학습 및 모델 배포 |
+| `data/` | JSONL 데이터 및 SQL 초기 데이터 |
+| `notebooks/` | 데이터 전처리 및 성능 분석 |
 
 ---
 
 ## 🛠 기술 스택
 
-- **Node.js + Express**: API 서버 (유저/관리자)
-- **Python + Flask**: 챗봇 응답 서버
-- **FastAPI (예정)**: 챗봇 학습 트리거 및 스케줄링
-- **MariaDB**: 유저, 레시피, 대화 로그 저장소
-- **Redis**: 유저별 세션 저장소 (AI 대화 컨텍스트)
-- **PyTorch + HuggingFace Transformers**: 챗봇 모델 학습
-- **JWT**: 인증 및 권한 관리
-- **Google OAuth**: 유저 로그인 인증
+- **Node.js + Express**: REST API 서버
+- **MariaDB**: 게임 및 유저 정보 저장
+- **Redis**: 세션 / 대화 컨텍스트 캐싱
+- **Flask**: AI 응답 서버
+- **PyTorch + Transformers**: TinyLlama 기반 챗봇 학습
+- **JWT + OAuth (Google)**: 유저 인증
+- **Bcrypt**: 비밀번호 해싱
+- **Winston**: 커스텀 로거 (에러/이벤트 기록)
+- **Nodemailer**: 비밀번호 재설정 메일 발송
 
 ---
 
 ## 🚀 실행 방법
 
-### 1. 환경 변수 설정
+### 1. 환경변수 설정
 
-`.env` 파일을 `flapper/` 디렉토리에 생성:
+`.env` 예시 (flapper/src/.env):
 
 ```env
 DB_HOST=localhost
-DB_USER=flapper
-DB_PASSWORD=your_password
+DB_USER=root
+DB_PASSWORD=secret
 DB_NAME=Flapper_Moonshine
 
+JWT_SECRET=flapper_secret
 GOOGLE_CLIENT_ID=your_google_client_id
-JWT_SECRET=your_jwt_secret
+EMAIL_USER=your_gmail@gmail.com
+EMAIL_PASS=your_gmail_app_pw
+
+BASE_RESET_URL=http://localhost:3000/reset-password
 ```
 
 ---
 
-### 2. 개발 서버 실행
+### 2. 서버 실행
 
 ```bash
-# flapper 백엔드 서버 실행
+# 1. 백엔드 서버 실행
 cd flapper
 npm install
-npm run dev  # nodemon 사용 시
+npm run dev
 
-# AI 챗봇 응답 서버 실행
+# 2. 챗봇 응답 서버 실행 (Flask)
 cd ../neo-ai/ai-service
 python tinyllama_server.py
 
-# AI 트레이너 서버 실행
+# 3. 챗봇 학습 서버 실행
 cd ../ai-trainer
 python train_launcher.py
 ```
 
 ---
 
-## 🗃 데이터 구조 요약
+## 📦 주요 기능
 
-- `user`: 유저 기본 정보 및 게임 진행 상태
-- `cocktail_recipe`: 칵테일 레시피 및 맛/향 점수
-- `dialog_log`: 유저-NPC 간 대화 로그
-- `training_sessions`: 학습 큐 관리 테이블
+- 관리자 로그인, 계정 관리
+- 유저 정보 및 세이브 슬롯 관리
+- 기본 / 커스텀 칵테일 레시피 저장 및 편집
+- 재료 및 가니시 메타데이터 관리
+- AI NPC와의 대화 및 대화 로그 수집
+- AI 학습 요청 / 버전 제어 / 자동 재배포
 
 ---
 
-## 🔄 학습 파이프라인
+## 🔄 AI 학습 흐름도
 
 ```text
-[대화 로그 DB]
-   ↓
-[admin에서 학습 요청]
-   ↓
-[ai-trainer가 감지 → 학습용 jsonl 추출 → 학습 진행]
-   ↓
-[최신 모델 → ai-service에 배포]
+[유저 대화 로그 DB]
+        ↓
+[관리자 요청 or 자동 조건 감지]
+        ↓
+[neo-ai/ai-trainer]
+  ↳ 세션 전처리 → LoRA 학습 → 저장
+        ↓
+[neo-ai/ai-service]
+  ↳ 모델 버전 업데이트 → 실시간 응답
 ```
+
+---
+
+## 📚 데이터셋
+
+- **KoAlpaca v1.1**: Alpaca 스타일 instruction tuning (CC BY-NC 4.0)
+- **KakaoChatData**: 한국어 대화 로그 기반 데이터
+- **Custom NPC 대화 로그**: 게임 내 유저 대화 저장 → 학습용 JSONL 변환
 
 ---
 
 ## ✨ 향후 확장
 
-- NPC 개별 챗봇 → 유저별 전이학습
-- 관리자 UI에서 대화 로그 조회 및 학습 트리거
-- 챗봇 성능 평가 기능 도입 (BLEU, perplexity 등)
-- Docker 컨테이너화 및 AWS 배포
+- NPC별 Fine-tuning + 유저별 LoRA adapter 분기
+- 관리자 UI → 대화 수정 및 수동 학습
+- 성능 평가 지표 도입 (BLEU, BERTScore)
+- AWS EC2 / S3 배포, Docker 기반 인프라 전환
 
 ---
 
-## 👤 개발자 정보
+## 👤 개발 정보
 
-- **Backend 설계 및 구현**: 최재인
-- **AI 챗봇 아키텍처 및 학습 설계**: 최재인
-- **DB 및 칵테일 맛/향 점수 설계**: 최재인
+- **백엔드 / AI 서버 / 데이터베이스 설계 및 구현**: **최재인 (Choi Jae-in)**
 
 ---
 
