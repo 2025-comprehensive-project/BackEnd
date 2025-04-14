@@ -23,6 +23,22 @@ CREATE TABLE user (
     signature_cocktail_id INT DEFAULT NULL
 );
 
+-- 유저 세이브 슬롯 테이블
+CREATE TABLE user_save (
+    save_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    play_time INT DEFAULT 0,
+    chapter INT DEFAULT 1,
+    in_game_day INT,
+    money INT DEFAULT 0,
+    reputation_score INT DEFAULT 0,
+    saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(user_id, slot_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
 -- 노트 카테고리 테이블
 CREATE TABLE note_category (
     note_category_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,27 +108,12 @@ CREATE TABLE cocktail_recipe (
     FOREIGN KEY (garnish_id) REFERENCES garnish_type(garnish_id)
 );
 
--- 유저 세이브 슬롯 테이블
-CREATE TABLE user_save (
-    save_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    slot_id INT NOT NULL,
-    play_time INT DEFAULT 0,
-    chapter INT DEFAULT 1,
-    in_game_day INT,
-    money INT DEFAULT 0,
-    reputation_score INT DEFAULT 0,
-    saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE(user_id, slot_id),
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
-);
-
 -- 유저 별 해금된 재료 저장 테이블
 CREATE TABLE unlocked_ingredient (
     user_id INT NOT NULL,
     slot_id INT NOT NULL,
     ingredient_id INT NOT NULL,
+    
     PRIMARY KEY (user_id, slot_id, ingredient_id),
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
     FOREIGN KEY (ingredient_id) REFERENCES ingredient(ingredient_id)
@@ -126,12 +127,32 @@ CREATE TABLE furniture (
     price INT NOT NULL DEFAULT 0       -- 가격 (게임 내 화폐 단위)
 );
 
+CREATE TABLE user_furniture (
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    furniture_id INT NOT NULL,
+
+    PRIMARY KEY (user_id, slot_id, furniture_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (furniture_id) REFERENCES furniture(furniture_id)
+);
+
 -- LP 테이블
 CREATE TABLE long_playing_record (
     record_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,        -- LP 이름
     description TEXT,                  -- 설명
     price INT NOT NULL DEFAULT 0       -- 가격
+);
+
+CREATE TABLE user_long_playing_record (
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    record_id INT NOT NULL,
+
+    PRIMARY KEY (user_id, slot_id, record_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (record_id) REFERENCES long_playing_record(record_id)
 );
 
 -- ALTER 버전
@@ -147,6 +168,19 @@ FOREIGN KEY (signature_cocktail_id) REFERENCES cocktail_recipe(recipe_id) ON DEL
 ALTER TABLE cocktail_recipe
 ADD CONSTRAINT fk_recipe_creator
 FOREIGN KEY (creator_id) REFERENCES user(user_id) ON DELETE SET NULL;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

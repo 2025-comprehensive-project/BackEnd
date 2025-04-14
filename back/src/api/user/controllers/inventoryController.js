@@ -1,34 +1,7 @@
 const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator');
 
-const loadSaveData = async (req, res, next) => {
-  const user_id = req.user.userId; // ✅ JWT에서 추출
-  const { load_id } = req.body;
-
-  if (!load_id) {
-    return next(createError(400, 'load_id는 필수입니다.', 'MISSING_SLOT_ID'));
-  }
-
-  try {
-    const [rows] = await db.query(
-      `SELECT money, in_game_day AS date, play_time, chapter, reputation_score
-       FROM user_save
-       WHERE user_id = ? AND slot_id = ?`,
-      [user_id, load_id]
-    );
-
-    if (rows.length === 0) {
-      return next(createError(404, '해당 세이브 데이터를 찾을 수 없습니다.', 'SAVE_NOT_FOUND'));
-    }
-
-    res.json(rows[0]);
-  } catch (err) {
-    console.error('❌ 세이브 데이터 불러오기 오류:', err);
-    next(createError(500, '세이브 데이터 불러오기 실패', 'LOAD_ERROR'));
-  }
-};
-
-// 세이브 데이터 저장 (해금된 재료)
+// 인벤토리 데이터 저장 (해금된 재료)
 // 해금된 재료를 저장하는 API 핸들러
 const saveUnlockedIngredients = async (req, res, next) => {
   const user_id = req.user.userId;
@@ -67,7 +40,7 @@ const saveUnlockedIngredients = async (req, res, next) => {
   }
 };
 
-// 세이브 데이터 불러오기 (해금된 재료)
+// 인벤토리 데이터 불러오기 (해금된 재료)
 // 해금된 재료를 불러오는 API 핸들러
 const getUnlockedIngredients = async (req, res, next) => {
   const user_id = req.user.userId;
@@ -159,10 +132,76 @@ const getUserFurniture = async (req, res, next) => {
   }
 };
 
+// LP 보유 상태 저장 API 핸들러
+// LP 보유 상태를 저장하는 API 핸들러
+const saveUserRecords = async (req, res, next) => {
+    const user_id = req.user.userId;
+    const { slot_id, record_ids } = req.body;
+  
+    if (!slot_id || !Array.isArray(record_ids)) {
+      return next(createError(400, 'slot_id와 record_ids 배열이 필요합니다.', 'MISSING_FIELDS'));
+    }
+  
+    const conn = await db.getConnection();
+    await conn.beginTransaction();
+  
+    try {
+      await conn.query(
+        `DELETE FROM user_record WHERE user_id = ? AND slot_id = ?`,
+        [user_id, slot_id]
+      );
+  
+      for (const record_id of record_ids) {
+        await conn.query(
+          `INSERT INTO user_record (user_id, slot_id, record_id)
+           VALUES (?, ?, ?)`,
+          [user_id, slot_id, record_id]
+        );
+      }
+  
+      await conn.commit();
+      res.status(201).json({ message: '✅ LP 보유 상태가 저장되었습니다.' });
+    } catch (err) {
+      await conn.rollback();
+      console.error('❌ LP 저장 실패:', err);
+      next(createError(500, 'LP 저장 실패', 'SAVE_RECORD_FAILED'));
+    } finally {
+      conn.release();
+    }
+  };
+
+// LP 보유 상태 조회 API 핸들러
+// LP 보유 상태를 조회하는 API 핸들러
+const getUserRecords = async (req, res, next) => {
+    const user_id = req.user.userId;
+    const { slot_id } = req.query;
+  
+    if (!slot_id) {
+      return next(createError(400, 'slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
+    }
+  
+    try {
+      const [rows] = await db.query(
+        `SELECT r.record_id, r.name, r.description, r.price
+         FROM user_record ur
+         JOIN long_playing_record r ON ur.record_id = r.record_id
+         WHERE ur.user_id = ? AND ur.slot_id = ?
+         ORDER BY r.record_id`,
+        [user_id, slot_id]
+      );
+  
+      res.json(rows);
+    } catch (err) {
+      console.error('❌ LP 조회 실패:', err);
+      next(createError(500, 'LP 조회 실패', 'GET_RECORD_FAILED'));
+    }
+};
+
 module.exports = {
-  loadSaveData,
   saveUnlockedIngredients,
   getUnlockedIngredients,
   saveUserFurniture,
-  getUserFurniture
+  getUserFurniture,
+  saveUserRecords,
+  getUserRecords,
 };

@@ -1,83 +1,86 @@
-// src/controllers/admin/userController.js
 const db = require('../../../../src/config/dbConnect');
+const createError = require('../../../utils/errorCreator'); // ✅ 추가
 
-// 1. 전체 유저 목록 조회 (GET /api/admin/users)
-const getAllUsers = async (req, res) => {
+// 1. 전체 유저 목록 조회
+const getAllUsers = async (req, res, next) => {
   try {
-    const [rows] = await db.query('SELECT * FROM user');
+    const [rows] = await db.query('SELECT * FROM user ORDER BY registered_at DESC');
     res.json(rows);
   } catch (error) {
     console.error('❌ Error fetching users:', error);
-    res.status(500).json({ message: 'Server error' });
+    next(createError(500, '유저 목록 조회 실패', 'FETCH_USERS_FAILED'));
   }
 };
 
-// 2. 특정 유저 슬롯 정보 조회 (GET /api/admin/users/:user_id/saves/:slot_id)
-const getUserInfo = async (req, res) => {
+// 2. 특정 유저 슬롯 정보 조회
+const getUserInfo = async (req, res, next) => {
   const { user_id, slot_id } = req.params;
 
   try {
     const [rows] = await db.query(
-      'SELECT * FROM saves WHERE user_id = ? AND slot_id = ?',
+      'SELECT * FROM user_save WHERE user_id = ? AND slot_id = ?',
       [user_id, slot_id]
     );
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: 'Save data not found' });
+      return next(createError(404, '세이브 데이터를 찾을 수 없습니다.', 'SAVE_NOT_FOUND'));
     }
 
     res.json(rows[0]);
   } catch (error) {
-    console.error('❌ Error fetching user save info:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ 세이브 정보 조회 실패:', error);
+    next(createError(500, '세이브 정보 조회 실패', 'FETCH_SAVE_FAILED'));
   }
 };
 
-// 3. 특정 유저 대화 로그 조회 (GET /api/admin/users/:user_id/dialog-logs?slot_id=...)
-const getUserDialogLogs = async (req, res) => {
+// 3. 특정 유저 대화 로그 조회
+const getUserDialogLogs = async (req, res, next) => {
   const { user_id } = req.params;
   const { slot_id } = req.query;
 
   if (!slot_id) {
-    return res.status(400).json({ message: 'slot_id is required' });
+    return next(createError(400, 'slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
   }
 
   try {
     const [rows] = await db.query(
-      'SELECT * FROM dialog_logs WHERE user_id = ? AND slot_id = ?',
+      `SELECT log_id, session_id, npc_id, speaker, message, created_at, emotion_tag, version_tag
+       FROM user_dialogs
+       WHERE user_id = ? AND slot_id = ?
+       ORDER BY created_at ASC`,
       [user_id, slot_id]
     );
 
     res.json(rows);
   } catch (error) {
-    console.error('❌ Error fetching dialog logs:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ 대화 로그 조회 실패:', error);
+    next(createError(500, '대화 로그 조회 실패', 'FETCH_DIALOG_FAILED'));
   }
 };
 
-// 4. 유저 정보 수정 (PUT /api/admin/users/:user_id/saves/:slot_id)
-const updateUserInfo = async (req, res) => {
+// 4. 유저 정보 수정
+const updateUserInfo = async (req, res, next) => {
   const { user_id, slot_id } = req.params;
-  const { reputation, currency } = req.body;
+  const { reputation_score, money } = req.body;
 
-  if (reputation == null || currency == null) {
-    return res.status(400).json({ message: 'reputation and currency are required' });
+  if (reputation_score == null || money == null) {
+    return next(createError(400, 'reputation_score와 money는 필수입니다.', 'MISSING_FIELDS'));
   }
 
   try {
     const [result] = await db.query(
-      'UPDATE saves SET reputation = ?, currency = ? WHERE user_id = ? AND slot_id = ?',
-      [reputation, currency, user_id, slot_id]
+      'UPDATE user_save SET reputation_score = ?, money = ? WHERE user_id = ? AND slot_id = ?',
+      [reputation_score, money, user_id, slot_id]
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'No matching save data to update' });
+      return next(createError(404, '일치하는 세이브 데이터가 없습니다.', 'SAVE_NOT_FOUND'));
     }
 
-    res.json({ message: 'User save info updated successfully' });
+    res.json({ message: '유저 세이브 정보가 성공적으로 수정되었습니다.' });
   } catch (error) {
-    console.error('❌ Error updating user save info:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ 유저 정보 수정 실패:', error);
+    next(createError(500, '유저 정보 수정 실패', 'UPDATE_USER_FAILED'));
   }
 };
 

@@ -4,7 +4,7 @@ const router = express.Router();
 
 const metaRoutes = require('./metaRoutes');
 
-router.use('/meta', metaRoutes); // /api/public/meta/...
+router.use('/meta', metaRoutes); // /api/public/...
 
 module.exports = router;
 // src/routes/public/metaRoutes.js

@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const adminAuth = require('../../../middleware/adminAuth');
+const adminAuth = require('../../../middlewares/adminAuth');
 
 // 📦 컨트롤러 함수들
 const {
