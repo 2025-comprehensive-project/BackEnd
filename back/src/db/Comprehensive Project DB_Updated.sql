@@ -159,10 +159,12 @@ CREATE TABLE user_long_playing_record (
 ALTER TABLE user_save
 ADD COLUMN in_game_day INT;
 
--- 외래키 연결 (user → cocktail_recipe)
+-- 외래키 연결 끊어!  (user → cocktail_recipe)
 ALTER TABLE user
-ADD CONSTRAINT fk_user_signature_cocktail
-FOREIGN KEY (signature_cocktail_id) REFERENCES cocktail_recipe(recipe_id) ON DELETE SET NULL;
+DROP FOREIGN KEY fk_user_signature_cocktail;
+
+ALTER TABLE user
+DROP COLUMN signature_cocktail_id;
 
 -- 외래키 연결 (cocktail_recipe → user)
 ALTER TABLE cocktail_recipe

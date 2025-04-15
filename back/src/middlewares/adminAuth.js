@@ -1,3 +1,7 @@
+// 관리자 인증 미들웨어
+// 이 미들웨어는 JWT를 사용하여 관리자의 인증을 처리합니다.
+// 관리자는 특정 API 엔드포인트에 접근할 수 있는 권한을 가진 사용자입니다.
+
 const jwt = require('jsonwebtoken');
 
 const adminAuth = (req, res, next) => {

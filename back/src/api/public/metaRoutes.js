@@ -14,7 +14,7 @@ const {
 //public API 라우터, 인증 미들웨어 필요 없음
 //router.use(adminAuth);
 
-// 전체 칵테일 레시피 조회 (GET /api/public/cocktails)
+// 전체 칵테일 레시피 조회 (유저 칵테일 제외) (GET /api/public/cocktails)
 router.get('/cocktails', getAllCocktails);
 
 // 특정 칵테일 레시피 조회 (GET /api/public/cocktails/:recipe_id)

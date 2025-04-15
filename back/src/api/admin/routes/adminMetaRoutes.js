@@ -9,12 +9,12 @@ const {
   addGarnish,
   updateGarnish,
   deleteGarnish
-} = require('../controllers/metaController');
+} = require('../controllers/adminMetaController');
 
 // 모든 요청은 관리자 인증 필요
 router.use(adminAuth);
 
-// 🧪 재료 관련 라우트
+// 재료 관련 라우트
 // 재료 추가 (POST /api/admin/meta/ingredients)
 router.post('/ingredients', addIngredient);
 
@@ -24,7 +24,7 @@ router.patch('/ingredients/:ingredient_id', updateIngredient);
 // 재료 삭제 (DELETE /api/admin/meta/ingredients/:ingredient_id)
 router.delete('/ingredients/:ingredient_id', deleteIngredient);
 
-// 🍒 가니시 관련 라우트
+// 가니시 관련 라우트
 // 가니시 추가 (POST /api/admin/meta/garnishes)
 router.post('/garnishes', addGarnish);
 

@@ -7,19 +7,23 @@ const {
     saveUnlockedIngredients,
     getUnlockedIngredients,
     saveUserFurniture,
-    getUserFurniture
-  } = require('../controllers/saveController');
+    getUserFurniture,
+    saveUserRecords, 
+    getUserRecords
+  } = require('../controllers/inventoryController');
+
+router.use(auth); // 모든 라우터에 auth 미들웨어 적용
 
 // 재료 해금 API
-router.post('/unlocked-ingredients', auth, saveUnlockedIngredients); // 해금된 재료 저장
-router.get('/unlocked-ingredients', auth, getUnlockedIngredients); // 해금된 재료 불러오기
+router.post('/unlocked-ingredients', saveUnlockedIngredients); // 해금된 재료 저장
+router.get('/unlocked-ingredients', getUnlockedIngredients); // 해금된 재료 불러오기
 
 // 가구 해금 API
-router.post('/unlocked-furniture', auth, saveUserFurniture);
-router.get('/unlocked-furniture', auth, getUserFurniture);
+router.post('/unlocked-furniture', saveUserFurniture);
+router.get('/unlocked-furniture', getUserFurniture);
 
 //
-router.post('/unlocked-lp-records', auth, saveUserRecords);
-router.get('/unlocked-lp-records', auth, getUserRecords);
+router.post('/unlocked-lp-records', saveUserRecords);
+router.get('/unlocked-lp-records', getUserRecords);
 
 module.exports = router;

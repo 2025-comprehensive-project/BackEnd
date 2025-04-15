@@ -1,3 +1,4 @@
+// Description: 어드민 계정 생성 스크립트
 require('dotenv').config();
 const db = require('../config/dbConnect');
 const bcrypt = require('bcrypt');

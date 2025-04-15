@@ -32,6 +32,7 @@ const getAllCocktails = async (req, res, next) => {
       LEFT JOIN ingredient i3 ON cr.ingredient3_id = i3.ingredient_id
       LEFT JOIN ingredient i4 ON cr.ingredient4_id = i4.ingredient_id
       LEFT JOIN garnish_type g ON cr.garnish_id = g.garnish_id
+      WHERE cr.creator_id IS NULL
       ORDER BY cr.recipe_id ASC
     `);
 
@@ -74,7 +75,7 @@ const getCocktailById = async (req, res, next) => {
       LEFT JOIN ingredient i3 ON cr.ingredient3_id = i3.ingredient_id
       LEFT JOIN ingredient i4 ON cr.ingredient4_id = i4.ingredient_id
       LEFT JOIN garnish_type g ON cr.garnish_id = g.garnish_id
-      WHERE cr.recipe_id = ?
+      WHERE cr.recipe_id = ? AND cr.creator_id IS NULL
     `, [recipe_id]);
 
     if (rows.length === 0) {
