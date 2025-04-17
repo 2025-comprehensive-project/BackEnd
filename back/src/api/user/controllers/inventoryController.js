@@ -1,10 +1,12 @@
 const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator');
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
+const logger = require('../../../utils/logger'); // 로거 유틸리티
 
 // 인벤토리 데이터 저장 (해금된 재료)
 // 해금된 재료를 저장하는 API 핸들러
 const saveUnlockedIngredients = async (req, res, next) => {
-  const user_id = req.user.userId;
+  const user_id = DEMO_MODE ? 1 : req.user?.user_id;
   const { slot_id, ingredient_ids } = req.body;
 
   if (!slot_id || !Array.isArray(ingredient_ids)) {
@@ -22,10 +24,10 @@ const saveUnlockedIngredients = async (req, res, next) => {
     );
 
     // 새로 insert
-    for (const ingredient_id of ingredient_ids) {
+    for (const ingredientId of ingredient_ids) {
       await conn.query(
         `INSERT INTO unlocked_ingredient (user_id, slot_id, ingredient_id) VALUES (?, ?, ?)`,
-        [user_id, slot_id, ingredient_id]
+        [user_id, slot_id, ingredientId]
       );
     }
 
@@ -33,7 +35,7 @@ const saveUnlockedIngredients = async (req, res, next) => {
     res.status(201).json({ message: '✅ 재료 해금 상태가 저장되었습니다.' });
   } catch (err) {
     await conn.rollback();
-    console.error('❌ 재료 해금 저장 실패:', err);
+    logger.error('❌ 재료 해금 저장 실패:', err);
     next(createError(500, '재료 해금 저장 실패', 'SAVE_INGREDIENT_UNLOCK_FAILED'));
   } finally {
     conn.release();
@@ -43,7 +45,7 @@ const saveUnlockedIngredients = async (req, res, next) => {
 // 인벤토리 데이터 불러오기 (해금된 재료)
 // 해금된 재료를 불러오는 API 핸들러
 const getUnlockedIngredients = async (req, res, next) => {
-  const user_id = req.user.userId;
+  const user_id = DEMO_MODE ? 1 : req.user?.user_id;
   const { slot_id } = req.query;
 
   if (!slot_id) {
@@ -62,7 +64,7 @@ const getUnlockedIngredients = async (req, res, next) => {
 
     res.json(rows); // 배열로 반환
   } catch (err) {
-    console.error('❌ 재료 해금 조회 실패:', err);
+    logger.error('❌ 재료 해금 조회 실패:', err);
     next(createError(500, '재료 해금 조회 실패', 'GET_INGREDIENT_UNLOCK_FAILED'));
   }
 };
@@ -70,7 +72,7 @@ const getUnlockedIngredients = async (req, res, next) => {
 // 가구 해금 상태 저장 API 핸들러
 // 가구 해금 상태를 저장하는 API 핸들러
 const saveUserFurniture = async (req, res, next) => {
-  const user_id = req.user.userId;
+  const user_id = DEMO_MODE ? 1 : req.user?.user_id;
   const { slot_id, furniture_ids } = req.body;
 
   if (!slot_id || !Array.isArray(furniture_ids)) {
@@ -98,7 +100,7 @@ const saveUserFurniture = async (req, res, next) => {
     res.status(201).json({ message: '✅ 가구 보유 상태가 저장되었습니다.' });
   } catch (err) {
     await conn.rollback();
-    console.error('❌ 가구 저장 실패:', err);
+    logger.error('❌ 가구 저장 실패:', err);
     next(createError(500, '가구 저장 실패', 'SAVE_FURNITURE_FAILED'));
   } finally {
     conn.release();
@@ -108,7 +110,7 @@ const saveUserFurniture = async (req, res, next) => {
 // 가구 해금 상태 조회 API 핸들러
 // 가구 해금 상태를 조회하는 API 핸들러
 const getUserFurniture = async (req, res, next) => {
-  const user_id = req.user.userId;
+  const user_id = DEMO_MODE ? 1 : req.user?.user_id;
   const { slot_id } = req.query;
 
   if (!slot_id) {
@@ -127,7 +129,7 @@ const getUserFurniture = async (req, res, next) => {
 
     res.json(rows);
   } catch (err) {
-    console.error('❌ 가구 조회 실패:', err);
+    logger.error('❌ 가구 조회 실패:', err);
     next(createError(500, '가구 조회 실패', 'GET_FURNITURE_FAILED'));
   }
 };
@@ -135,7 +137,7 @@ const getUserFurniture = async (req, res, next) => {
 // LP 보유 상태 저장 API 핸들러
 // LP 보유 상태를 저장하는 API 핸들러
 const saveUserRecords = async (req, res, next) => {
-    const user_id = req.user.userId;
+    const user_id = DEMO_MODE ? 1 : req.user?.user_id;
     const { slot_id, record_ids } = req.body;
   
     if (!slot_id || !Array.isArray(record_ids)) {
@@ -163,7 +165,7 @@ const saveUserRecords = async (req, res, next) => {
       res.status(201).json({ message: '✅ LP 보유 상태가 저장되었습니다.' });
     } catch (err) {
       await conn.rollback();
-      console.error('❌ LP 저장 실패:', err);
+      logger.error('❌ LP 저장 실패:', err);
       next(createError(500, 'LP 저장 실패', 'SAVE_RECORD_FAILED'));
     } finally {
       conn.release();
@@ -173,7 +175,7 @@ const saveUserRecords = async (req, res, next) => {
 // LP 보유 상태 조회 API 핸들러
 // LP 보유 상태를 조회하는 API 핸들러
 const getUserRecords = async (req, res, next) => {
-    const user_id = req.user.userId;
+    const user_id = DEMO_MODE ? 1 : req.user?.user_id;
     const { slot_id } = req.query;
   
     if (!slot_id) {
@@ -192,7 +194,7 @@ const getUserRecords = async (req, res, next) => {
   
       res.json(rows);
     } catch (err) {
-      console.error('❌ LP 조회 실패:', err);
+      logger.error('❌ LP 조회 실패:', err);
       next(createError(500, 'LP 조회 실패', 'GET_RECORD_FAILED'));
     }
 };

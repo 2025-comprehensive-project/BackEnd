@@ -9,11 +9,19 @@ const logger = require('./utils/logger'); // Winston 인스턴스 가져오기
 
 const app = express();
 
+// app.use(
+//   morgan('combined', {
+//     stream: {
+//       write: (message) => logger.info(message.trim())
+//     }
+//   })
+// );
+
 // Morgan + Winston 연동
 // morgan은 HTTP 요청 로깅을 위한 미들웨어입니다.
 // Winston은 로그를 파일에 기록하는 라이브러리입니다.
 app.use(
-  morgan('combined', {
+  morgan(':remote-addr :method :url :status :res[content-length] - :user-agent', {
     stream: {
       write: (message) => logger.info(message.trim())
     }
@@ -22,7 +30,12 @@ app.use(
 
 // 공통 미들웨어
 app.use(express.json());
-app.use(cors()); 
+//app.use(cors()); 
+
+app.use(cors({
+  origin: 'http://localhost:3000', // local host:3000에서 오는 요청을 허용합니다.
+  credentials: true
+}));
 
 // API 라우터
 app.use('/api', apiRoutes);

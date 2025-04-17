@@ -1,35 +1,50 @@
 const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator');
+const logger = require('../../../utils/logger'); // 로거 유틸리티
+
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
 const loadData = async (req, res, next) => {
-  const user_id = req.user.userId; // ✅ JWT에서 추출
-  const { load_id } = req.body;
+  const user_id = DEMO_MODE ? 1 : req.user?.user_id; // ✅ JWT에서 추출
+  const { slot_id } = req.body;
 
-  if (!load_id) {
-    return next(createError(400, 'load_id는 필수입니다.', 'MISSING_SLOT_ID'));
+  if (!slot_id) {
+    return next(createError(400, '❌ slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
   }
 
   try {
     const [rows] = await db.query(
-      `SELECT money, in_game_day AS date, play_time, chapter, reputation_score
-       FROM user_save
-       WHERE user_id = ? AND slot_id = ?`,
-      [user_id, load_id]
+      `SELECT 
+        us.save_id,
+        us.user_id,
+        u.name AS user_name,
+        us.slot_id,
+        us.play_time,
+        us.chapter,
+        us.in_game_day AS date,
+        us.money,
+        us.reputation_score,
+        us.saved_at
+      FROM user_save us
+      JOIN user u ON us.user_id = u.user_id
+      WHERE us.user_id = ? AND us.slot_id = ?
+      `,
+      [user_id, slot_id]
     );
 
     if (rows.length === 0) {
-      return next(createError(404, '해당 세이브 데이터를 찾을 수 없습니다.', 'SAVE_NOT_FOUND'));
+      return next(createError(404, '❌ 해당 세이브 데이터를 찾을 수 없습니다.', 'SAVE_NOT_FOUND'));
     }
 
     res.json(rows[0]);
   } catch (err) {
-    console.error('❌ 세이브 데이터 불러오기 오류:', err);
-    next(createError(500, '세이브 데이터 불러오기 실패', 'LOAD_ERROR'));
+    logger.error('❌ 세이브 데이터 불러오기 오류:', err);
+    next(createError(500, '❌ 세이브 데이터 불러오기 실패', 'LOAD_ERROR'));
   }
 };
 
 const saveData = async (req, res, next) => {
-  const user_id = req.user.userId;
+  const user_id = DEMO_MODE ? 1 : req.user?.user_id; // ✅ JWT에서 추출
   const {
     slot_id,
     play_time,
@@ -40,7 +55,7 @@ const saveData = async (req, res, next) => {
   } = req.body;
 
   if (!slot_id) {
-    return next(createError(400, 'slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
+    return next(createError(400, '❌ slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
   }
 
   try {
@@ -59,10 +74,14 @@ const saveData = async (req, res, next) => {
       [user_id, slot_id, play_time, chapter, in_game_day, money, reputation_score]
     );
 
-    res.status(200).json({ message: '✅ 세이브 데이터가 저장되었습니다.' });
+    res.status(200).json({
+      message: '✅ 세이브 데이터가 저장되었습니다.',
+      slot_id,
+      saved_at: new Date().toISOString()
+    });
   } catch (err) {
-    console.error('❌ 세이브 데이터 저장 실패:', err);
-    next(createError(500, '세이브 저장 실패', 'SAVE_FAILED'));
+    logger.error('❌ 세이브 데이터 저장 실패:', err);
+    next(createError(500, '❌ 세이브 저장 실패', 'SAVE_FAILED'));
   }
 };
 

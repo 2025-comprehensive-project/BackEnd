@@ -12,7 +12,7 @@ const {
     getUserRecords
   } = require('../controllers/inventoryController');
 
-router.use(auth); // 모든 라우터에 auth 미들웨어 적용
+//router.use(auth); // 모든 라우터에 auth 미들웨어 적용
 
 // 재료 해금 API
 router.post('/unlocked-ingredients', saveUnlockedIngredients); // 해금된 재료 저장

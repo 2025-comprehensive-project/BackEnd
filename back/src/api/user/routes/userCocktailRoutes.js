@@ -3,11 +3,18 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../../middlewares/userAuth');
 const {
-    getUserCocktails
+    getUserCocktails,
+    createUserCocktail,
 } = require('../controllers/userCocktailController');
+
+//router.use(auth); // 모든 라우트에 auth 미들웨어 적용
 
 // 유저 시그니처 칵테일 목록 조회
 // GET /api/users/cocktails/signature
-router.get('/signature', auth, getUserCocktails);
+router.get('/signature', getUserCocktails);
+
+// 유저 시그니처 칵테일 생성
+// POST /api/users/cocktails/signature
+router.post('/signature', createUserCocktail);
 
 module.exports = router;

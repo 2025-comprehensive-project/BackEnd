@@ -55,7 +55,7 @@ const addIngredient = async (req, res, next) => {
 
 // 재료 수정
 const updateIngredient = async (req, res, next) => {
-  const { ingredient_id } = req.params;
+  const { ingredientId } = req.params;
   const { name, sweetness, sourness, bitterness, abv, description, note_categories } = req.body;
 
   const conn = await db.getConnection();
@@ -66,9 +66,9 @@ const updateIngredient = async (req, res, next) => {
       UPDATE ingredient 
       SET name = ?, sweetness = ?, sourness = ?, bitterness = ?, abv = ?, description = ?
       WHERE ingredient_id = ?
-    `, [name, sweetness, sourness, bitterness, abv, description, ingredient_id]);
+    `, [name, sweetness, sourness, bitterness, abv, description, ingredientId]);
 
-    await conn.query(`DELETE FROM ingredient_note WHERE ingredient_id = ?`, [ingredient_id]);
+    await conn.query(`DELETE FROM ingredient_note WHERE ingredient_id = ?`, [ingredientId]);
 
     let categories = note_categories;
     if (typeof categories === 'string') {
@@ -92,7 +92,7 @@ const updateIngredient = async (req, res, next) => {
         await conn.query(
           `INSERT INTO ingredient_note (ingredient_id, note_category_id)
            VALUES (?, ?)`,
-          [ingredient_id, noteCategoryId]
+          [ingredientId, noteCategoryId]
         );
       }
     }

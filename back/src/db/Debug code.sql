@@ -117,5 +117,79 @@ SET ingredient1_id = 3
 WHERE name = '코스모폴리탄';
 
 
+-- 가구 테이블
+CREATE TABLE furniture (
+    furniture_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,        -- 가구 이름
+    description TEXT,                  -- 설명
+    price INT NOT NULL DEFAULT 0       -- 가격 (게임 내 화폐 단위)
+);
+
+CREATE TABLE user_furniture (
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    furniture_id INT NOT NULL,
+
+    PRIMARY KEY (user_id, slot_id, furniture_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (furniture_id) REFERENCES furniture(furniture_id)
+);
+
+-- LP 테이블
+CREATE TABLE long_playing_record (
+    record_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,        -- LP 이름
+    description TEXT,                  -- 설명
+    price INT NOT NULL DEFAULT 0       -- 가격
+);
+
+CREATE TABLE user_long_playing_record (
+    user_id INT NOT NULL,
+    slot_id INT NOT NULL,
+    record_id INT NOT NULL,
+
+    PRIMARY KEY (user_id, slot_id, record_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (record_id) REFERENCES long_playing_record(record_id)
+);
+
+
+-- 디버깅용 유저 데이터 삽입
+INSERT INTO user (google_sub, email, name, profile_image)
+VALUES ('test-google-sub-123', 'test@example.com', '테스트유저', 'https://example.com/profile.png');
+
+INSERT INTO furniture (name, description, price)
+VALUES ('디버깅 가구', '디버깅 가구입니다. 소파입니다.', 100);
+
+INSERT INTO long_playing_record (name, description, price)
+VALUES ('디버깅 LP', '디버깅 LP입니다. 음악이 좋은 LP입니다.', 1000);
+
+-- user_id는 1번이라고 가정
+INSERT INTO user_save (user_id, slot_id, play_time, chapter, in_game_day, money, reputation_score)
+VALUES (1, 1, 120, 2, 3, 500, 20);
+
+-- ingredient_id는 미리 만들어진 재료의 ID를 기준으로 삽입
+INSERT INTO unlocked_ingredient (user_id, slot_id, ingredient_id)
+VALUES (1, 1, 1), (1, 1, 2), (1, 1, 3);
+
+INSERT INTO user_furniture (user_id, slot_id, furniture_id)
+VALUES (1, 1, 1);
+
+INSERT INTO user_long_playing_record (user_id, slot_id, record_id)
+VALUES (1, 1, 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

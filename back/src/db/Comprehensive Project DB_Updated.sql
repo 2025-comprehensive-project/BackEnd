@@ -159,7 +159,7 @@ CREATE TABLE user_long_playing_record (
 ALTER TABLE user_save
 ADD COLUMN in_game_day INT;
 
--- 외래키 연결 끊어!  (user → cocktail_recipe)
+-- 외래키 연결 끊었음, 시그니처 칵테일은 여러개 존재 가능.
 ALTER TABLE user
 DROP FOREIGN KEY fk_user_signature_cocktail;
 
@@ -187,5 +187,23 @@ FOREIGN KEY (creator_id) REFERENCES user(user_id) ON DELETE SET NULL;
 
 
 -- 아직 유저 다이어로그, 트레이닝 세션, 챗봇 상태 안넣음. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

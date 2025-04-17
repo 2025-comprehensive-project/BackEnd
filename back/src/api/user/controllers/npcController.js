@@ -2,6 +2,8 @@
 
 const chatService = require('../../../services/chatService');
 const aiService = require('../../../ai/serviceClient');
+const logger = require('../../../utils/logger'); // 로거 유틸리티
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
 module.exports = {
     talkToNpc: async (req, res, next) => {

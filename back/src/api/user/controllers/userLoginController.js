@@ -1,7 +1,8 @@
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
 const db = require('../../../config/dbConnect');
-const createError = require('../../../utils/errorCreator'); // 🔥 에러 생성 유틸 추가
+const createError = require('../../../utils/errorCreator');
+const logger = require('../../../utils/logger'); // 로거 유틸리티
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -61,7 +62,7 @@ exports.googleLogin = async (req, res, next) => {
       }
     });
   } catch (err) {
-    console.error('❌ ID 토큰 검증 또는 로그인 처리 실패:', err);
+    logger.error('❌ ID 토큰 검증 또는 로그인 처리 실패:', err);
     next(createError(401, 'ID 토큰 검증 실패', 'INVALID_ID_TOKEN'));
   }
 };

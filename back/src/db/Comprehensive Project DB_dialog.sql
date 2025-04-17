@@ -11,6 +11,7 @@ CREATE TABLE user_dialogs (
     message TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
+	-- 학습과 관련된 칼럼들
     emotion_tag VARCHAR(50),
     is_training_data BOOLEAN DEFAULT TRUE,
     version_tag VARCHAR(50),

@@ -180,3 +180,29 @@ FOREIGN KEY (creator_id) REFERENCES user(user_id) ON DELETE SET NULL;
 CREATE USER 'flapper'@'localhost' IDENTIFIED BY 'flapper123!';
 GRANT ALL PRIVILEGES ON Flapper_Moonshine.* TO 'flapper'@'localhost';
 FLUSH PRIVILEGES;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

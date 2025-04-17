@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const cocktailRoutes = require('./routes/adminCocktailRoutes');
-const userRoutes = require('./routes/userRoutes');
-const loginRoutes = require('./routes/loginRoutes');
+const userRoutes = require('./routes/userManagementRoutes');
+const loginRoutes = require('./routes/adminLoginRoutes');
 //const aiRoutes = require('./routes/aiRoutes');
 const adminMetaRoutes = require('./routes/adminMetaRoutes');
 

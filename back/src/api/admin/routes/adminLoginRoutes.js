@@ -7,7 +7,7 @@ const {
     changePassword,
     sendPasswordResetLink,
     resetPassword
-} = require('../controllers/loginController');
+} = require('../controllers/adminLoginController');
 
 router.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱, !!!디버깅용!!!
 

@@ -1,4 +1,4 @@
-const db = require('../../../../src/config/dbConnect');
+const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator'); // ✅ 추가
 
 // 1. 전체 유저 목록 조회
@@ -12,15 +12,47 @@ const getAllUsers = async (req, res, next) => {
   }
 };
 
-// 2. 특정 유저 슬롯 정보 조회
+// 2. 특정 유저 슬롯 정보 상세 조회 (유저 이름, 세이브 정보, 구매 정보 포함)
 const getUserInfo = async (req, res, next) => {
   const { user_id, slot_id } = req.params;
-
   try {
-    const [rows] = await db.query(
-      'SELECT * FROM user_save WHERE user_id = ? AND slot_id = ?',
-      [user_id, slot_id]
-    );
+    const [rows] = await db.query(`
+    SELECT 
+      us.save_id,
+      us.user_id,
+      u.name AS user_name,
+      us.slot_id,
+      us.play_time,
+      us.chapter,
+      us.in_game_day,
+      us.money,
+      us.reputation_score,
+      us.saved_at,
+
+      -- 유저가 보유한 가구 목록 (이름 기준)
+      GROUP_CONCAT(DISTINCT f.name ORDER BY f.furniture_id SEPARATOR ', ') AS furniture_list,
+
+      -- 유저가 보유한 LP 목록 (이름 기준)
+      GROUP_CONCAT(DISTINCT lp.name ORDER BY lp.record_id SEPARATOR ', ') AS lp_list
+
+      FROM user_save us
+
+      JOIN user u ON us.user_id = u.user_id
+
+      LEFT JOIN user_furniture uf 
+        ON us.user_id = uf.user_id AND us.slot_id = uf.slot_id
+      LEFT JOIN furniture f 
+        ON uf.furniture_id = f.furniture_id
+
+      LEFT JOIN user_long_playing_record ulp 
+        ON us.user_id = ulp.user_id AND us.slot_id = ulp.slot_id
+      LEFT JOIN long_playing_record lp 
+        ON ulp.record_id = lp.record_id
+
+      GROUP BY 
+        us.save_id, us.user_id, u.name, us.slot_id, us.play_time, us.chapter, us.in_game_day,
+        us.money, us.reputation_score, us.saved_at;
+    `, [user_id, slot_id]);
 
     if (rows.length === 0) {
       return next(createError(404, '세이브 데이터를 찾을 수 없습니다.', 'SAVE_NOT_FOUND'));
@@ -34,7 +66,7 @@ const getUserInfo = async (req, res, next) => {
 };
 
 // 3. 특정 유저 대화 로그 조회
-const getUserDialogLogs = async (req, res, next) => {
+const getUserDialogs = async (req, res, next) => {
   const { user_id } = req.params;
   const { slot_id } = req.query;
 
@@ -87,6 +119,6 @@ const updateUserInfo = async (req, res, next) => {
 module.exports = {
   getAllUsers,
   getUserInfo,
-  getUserDialogLogs,
+  getUserDialogs,
   updateUserInfo
 };

@@ -1,11 +1,13 @@
 // src/api/user/controllers/profileController.js
 
 const db = require('../../../config/dbConnect');
+const logger = require('../../../utils/logger'); // 로거 유틸리티
+const DEMO_MODE = process.env.DEMO_MODE === 'true';
 
 module.exports = {
   // 자신의 프로필 보기
   getOwnProfile: async (req, res, next) => {
-    const userId = req.params.id;
+    const user_id = DEMO_MODE ? 1 : req.user?.user_id; // JWT에서 userId 추출
 
     try {
       const [rows] = await db.maria.execute(
@@ -17,7 +19,7 @@ module.exports = {
         FROM user 
         WHERE user_id = ?
         `,
-        [userId]
+        [user_id]
       );
 
       if (rows.length === 0) {

@@ -8,8 +8,10 @@ const {
     saveData
   } = require('../controllers/saveController');
 
-router.post('/load', auth, loadData); // 세이브 데이터 불러오기
+//router.use(auth); // 모든 라우트에 auth 미들웨어 적용
 
-router.post('/save', auth, saveData); // 세이브 데이터 저장하기
+router.post('/load', loadData); // 세이브 데이터 불러오기
+
+router.post('/save', saveData); // 세이브 데이터 저장하기
 
 module.exports = router;

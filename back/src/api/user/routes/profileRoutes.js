@@ -5,7 +5,9 @@ const {
     getOwnProfile
 } = require('../controllers/profileController');
 
+//router.use(auth); // 모든 라우트에 auth 미들웨어 적용
+
 // 유저 프로필 조회
-router.get('/:id', auth, getOwnProfile);
+router.get('/:id', getOwnProfile);
 
 module.exports = router;

@@ -8,9 +8,9 @@ const adminAuth = require('../../../middlewares/adminAuth');
 const {
   getAllUsers,
   getUserInfo,
-  getUserDialogLogs,
+  getUserDialogs,
   updateUserInfo
-} = require('../controllers/userController');
+} = require('../controllers/userManagementController');
 
 // 🔐 전체 라우터 보호
 router.use(adminAuth);
@@ -26,11 +26,11 @@ router.get('/', getAllUsers);
 router.get('/:user_id/saves/:slot_id', getUserInfo);
 
 // 3. 특정 유저의 대화 로그 조회
-// GET /api/admin/users/:user_id/dialog-logs?slot_id=...
-router.get('/:user_id/dialog-logs', getUserDialogLogs);
+// GET /api/admin/users/:user_id/dialogs?slot_id=...
+router.get('/:user_id/dialogs', getUserDialogs);
 
 // 4. 유저 정보 수정
-// PUT /api/admin/users/:user_id/saves/:slot_id
-router.put('/:user_id/saves/:slot_id', updateUserInfo);
+// PATCH /api/admin/users/:user_id/saves/:slot_id
+router.patch('/:user_id/saves/:slot_id', updateUserInfo);
 
 module.exports = router;
