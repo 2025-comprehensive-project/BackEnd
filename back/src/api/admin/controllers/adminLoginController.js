@@ -6,7 +6,7 @@ const client = require('../../../config/redisClient'); // Redis 클라이언트
 const createError = require('../../../utils/errorCreator'); // 에러 핸들링 유틸리티
 const logger = require('../../../utils/logger'); // 로거 유틸리티
 
-// Nodemailer 설정
+// Nodemailer 설정, google SMTP 사용
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -14,6 +14,15 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS
     }
 });
+
+// const transporter = nodemailer.createTransport({
+//     host: process.env.EMAIL_HOST,
+//     port: process.env.EMAIL_PORT,
+//     auth: {
+//       user: process.env.EMAIL_USER,
+//       pass: process.env.EMAIL_PASS
+//     }
+//   });
 
 // 관리자 로그인
 const adminLogin = async (req, res, next) => {
@@ -130,6 +139,15 @@ const sendPasswordResetLink = async (req, res, next) => {
 
         const resetUrl = `${process.env.BASE_RESET_URL}?token=${token}`;
 
+        transporter.verify((err, success) => {
+            if (err) {
+              console.error('❌ SMTP 연결 실패:', err);
+            } else {
+              console.log('✅ SMTP 연결 성공');
+            }
+          });
+          
+
         await transporter.sendMail({
             to: email,
             subject: 'Flapper Moonshine 관리자 계정 비밀번호 재설정 링크',
@@ -138,6 +156,7 @@ const sendPasswordResetLink = async (req, res, next) => {
 
         return res.status(200).json({ message: '✅ 비밀번호 재설정 링크를 이메일로 보냈습니다.' });
     } catch (error) {
+        logger.error(`[메일 전송 오류] ${error.message || error}`);
         return next(createError(500, '❌ 메일 전송 오류', 'RESET_EMAIL_ERROR'));
     }
 };

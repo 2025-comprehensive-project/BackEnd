@@ -1,4 +1,4 @@
-// Description: 어드민 계정 생성 스크립트
+// Description: 어드민 계정 생성 또는 비밀번호 수정 스크립트
 require('dotenv').config();
 const db = require('../config/dbConnect');
 const bcrypt = require('bcrypt');
@@ -22,35 +22,50 @@ rl.question('Enter admin email: ', (emailInput) => {
 
     const email = emailInput.toLowerCase(); // 이메일 소문자 변환
 
-    // 비밀번호 입력 프롬프트 (비밀번호 숨김 처리 X)
-    rl.question('Enter admin password: ', async (password) => {
-        if (!password) {
-            console.log('❌ Password cannot be empty.');
+    // DB 조회 및 분기 처리
+    db.query('SELECT * FROM admin WHERE email = ?', [email])
+        .then(async ([existingAdmin]) => {
+            if (existingAdmin.length > 0) {
+                // 이미 존재 → 비밀번호 수정 여부 확인
+                rl.question('⚠️ Admin exists. Do you want to update the password? (y/N): ', async (confirm) => {
+                    if (confirm.toLowerCase() === 'y') {
+                        rl.question('Enter new password: ', async (newPassword) => {
+                            if (!newPassword) {
+                                console.log('❌ Password cannot be empty.');
+                                rl.close();
+                                process.exit(1);
+                            }
+                            const hashed = await bcrypt.hash(newPassword, 10);
+                            await db.query('UPDATE admin SET password = ? WHERE email = ?', [hashed, email]);
+                            console.log(`🔄 Password for ${email} updated successfully.`);
+                            rl.close();
+                            process.exit();
+                        });
+                    } else {
+                        console.log('❌ Aborted.');
+                        rl.close();
+                        process.exit();
+                    }
+                });
+            } else {
+                // 신규 생성
+                rl.question('Enter admin password: ', async (password) => {
+                    if (!password) {
+                        console.log('❌ Password cannot be empty.');
+                        rl.close();
+                        process.exit(1);
+                    }
+                    const hashedPassword = await bcrypt.hash(password, 10);
+                    await db.query('INSERT INTO admin (email, password) VALUES (?, ?)', [email, hashedPassword]);
+                    console.log(`✅ Admin account for ${email} created successfully!`);
+                    rl.close();
+                    process.exit();
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('❌ Error querying admin table:', error);
             rl.close();
             process.exit(1);
-        }
-
-        try {
-            // 1️. 기존 관리자 계정 존재 여부 확인
-            const [existingAdmin] = await db.query('SELECT * FROM admin WHERE email = ?', [email]);
-            if (existingAdmin.length > 0) {
-                console.log('⚠️ Admin account already exists.');
-                rl.close();
-                process.exit();
-            }
-
-            // 2️. 비밀번호 해싱
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            // 3️. 어드민 계정 삽입
-            await db.query('INSERT INTO admin (email, password) VALUES (?, ?)', [email, hashedPassword]);
-
-            console.log(`✅ Admin account for ${email} created successfully!`);
-        } catch (error) {
-            console.error('❌ Error inserting admin:', error);
-        } finally {
-            rl.close();
-            process.exit();
-        }
-    });
-});
+        });
+    })

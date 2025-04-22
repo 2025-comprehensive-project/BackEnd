@@ -6,16 +6,9 @@ const client = require('./config/redisClient'); // Redis 클라이언트 가져�
 const apiRoutes = require('./api');
 const errorHandler = require('./middlewares/errorHandler');
 const logger = require('./utils/logger'); // Winston 인스턴스 가져오기
+const path = require('path'); // 경로 관련 모듈
 
 const app = express();
-
-// app.use(
-//   morgan('combined', {
-//     stream: {
-//       write: (message) => logger.info(message.trim())
-//     }
-//   })
-// );
 
 // Morgan + Winston 연동
 // morgan은 HTTP 요청 로깅을 위한 미들웨어입니다.
@@ -30,10 +23,11 @@ app.use(
 
 // 공통 미들웨어
 app.use(express.json());
-//app.use(cors()); 
+
+//app.use(cors()); // 모든 도메인에서의 요청을 허용합니다.
 
 app.use(cors({
-  origin: 'http://localhost:3000', // local host:3000에서 오는 요청을 허용합니다.
+  origin: 'http://localhost:3000', // local host:3000에서 오는 요청을 허용합니다, 리액트 native 연결용?
   credentials: true
 }));
 
@@ -45,4 +39,13 @@ app.use('/api', apiRoutes);
 // 이 미들웨어는 모든 요청에 대해 발생할 수 있는 에러를 처리합니다.
 app.use(errorHandler);
 
-module.exports = app, client;
+const buildPath = path.join(__dirname, '../frontend/build');
+
+app.use(express.static(buildPath));
+
+// 🚨 path-to-regexp-safe fallback 처리
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
+});
+
+module.exports = { app, client };
