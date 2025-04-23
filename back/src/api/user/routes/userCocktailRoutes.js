@@ -5,6 +5,7 @@ const auth = require('../../../middlewares/userAuth');
 const {
     getUserCocktails,
     createUserCocktail,
+    predictUserCocktail
 } = require('../controllers/userCocktailController');
 
 //router.use(auth); // 모든 라우트에 auth 미들웨어 적용
@@ -16,5 +17,9 @@ router.get('/signature', getUserCocktails);
 // 유저 시그니처 칵테일 생성
 // POST /api/users/cocktails/signature
 router.post('/signature', createUserCocktail);
+
+// 예측용 칵테일 맛 분석
+// POST /api/user/cocktails/predict
+router.post('/predict', predictUserCocktail);
 
 module.exports = router;
