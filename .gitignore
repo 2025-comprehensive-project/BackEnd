@@ -135,3 +135,6 @@ dist
 
 # Character.ai 디렉토리 무시
 src/python/Character.ai/
+
+# 데이터 디렉토리 무시
+src/ai/chatbot/data/

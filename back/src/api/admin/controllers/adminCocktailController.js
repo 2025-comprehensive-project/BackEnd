@@ -1,5 +1,12 @@
 const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator');
+const logger = require('../../../utils/logger');
+const { calculateAbv } = require('../../../utils/abvCalculator'); // 도수 계산 유틸리티
+
+// 안전한 null 처리 함수
+const safeNull = (v) => {
+  return (v === '' || v === undefined) ? null : v;
+};
 
 // 1. 레시피 등록
 const addCocktail = async (req, res, next) => {
@@ -12,12 +19,49 @@ const addCocktail = async (req, res, next) => {
     garnish_id,
     method,
     glass_type,
-    abv,
     summary,
     comments
   } = req.body;
 
   try {
+    // ✅ [1] 필수 재료 체크
+    if (!ingredient1_id || !ingredient2_id) {
+      logger.error('❌ 필수 재료 체크 실패:', error);
+      return next(createError(400, '❌ 1번, 2번 재료는 필수입니다.', 'MISSING_BASE_INGREDIENT'));
+    }
+
+    // ✅ [2] 기주 ID(1~8) 체크
+    const baseSpiritIds = [1,2,3,4,5,6,7,8];
+    if (!baseSpiritIds.includes(Number(ingredient1_id)) || !baseSpiritIds.includes(Number(ingredient2_id))) {
+      logger.error('❌ 기주 ID 체크 실패:', error);
+      return next(createError(400, '❌ 1번과 2번 재료는 반드시 기주(1~8번)여야 합니다.', 'INVALID_BASE_INGREDIENT'));
+    }
+
+    // ✅ [3] 재료 ABV 정보 가져오기
+    const ingredientIds = [ingredient1_id, ingredient2_id, ingredient3_id, ingredient4_id].filter(id => id);
+
+    let ingredientInfo = {};
+    if (ingredientIds.length > 0) {
+      const [ingredientRows] = await db.query(
+        `SELECT ingredient_id, abv FROM ingredient WHERE ingredient_id IN (?)`,
+        [ingredientIds]
+      );
+      ingredientRows.forEach(row => {
+        ingredientInfo[row.ingredient_id] = { abv: row.abv };
+      });
+    }
+
+    // ✅ [4] 도수 계산
+    const ingredientList = [
+      { id: ingredient1_id, amountStr: ingredient1_amount },
+      { id: ingredient2_id, amountStr: ingredient2_amount },
+      { id: ingredient3_id, amountStr: ingredient3_amount },
+      { id: ingredient4_id, amountStr: ingredient4_amount }
+    ].filter(item => item.id);
+
+    const calculatedAbv = calculateAbv(ingredientList, ingredientInfo, glass_type);
+
+    // ✅ [5] 레시피 저장
     const [result] = await db.query(
       `INSERT INTO cocktail_recipe
         (name,
@@ -29,16 +73,22 @@ const addCocktail = async (req, res, next) => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
-        ingredient1_id, ingredient1_amount,
-        ingredient2_id, ingredient2_amount,
-        ingredient3_id, ingredient3_amount,
-        ingredient4_id, ingredient4_amount,
-        garnish_id, method, glass_type, abv, summary, comments
+        safeNull(ingredient1_id), safeNull(ingredient1_amount),
+        safeNull(ingredient2_id), safeNull(ingredient2_amount),
+        safeNull(ingredient3_id), safeNull(ingredient3_amount),
+        safeNull(ingredient4_id), safeNull(ingredient4_amount),
+        safeNull(garnish_id),
+        method,
+        glass_type,
+        calculatedAbv, 
+        summary,
+        comments
       ]
     );
 
     res.status(201).json({ message: '✅ 레시피가 등록되었습니다.', recipe_id: result.insertId });
   } catch (error) {
+    logger.error('❌ 레시피 등록 실패:', error);
     next(createError(500, '❌ 레시피 등록 실패', 'ADD_COCKTAIL_FAILED'));
   }
 };
@@ -55,12 +105,47 @@ const updateCocktail = async (req, res, next) => {
     garnish_id,
     method,
     glass_type,
-    abv,
     summary,
     comments
   } = req.body;
 
   try {
+    // ✅ [1] 필수 재료 체크
+    if (!ingredient1_id || !ingredient2_id) {
+      return next(createError(400, '❌ 1번, 2번 재료는 필수입니다.', 'MISSING_BASE_INGREDIENT'));
+    }
+
+    // ✅ [2] 기주 ID(1~8) 체크
+    const baseSpiritIds = [1,2,3,4,5,6,7,8];
+    if (!baseSpiritIds.includes(Number(ingredient1_id)) || !baseSpiritIds.includes(Number(ingredient2_id))) {
+      return next(createError(400, '❌ 1번과 2번 재료는 반드시 기주(1~8번)여야 합니다.', 'INVALID_BASE_INGREDIENT'));
+    }
+
+    // ✅ [3] 재료 ABV 정보 가져오기
+    const ingredientIds = [ingredient1_id, ingredient2_id, ingredient3_id, ingredient4_id].filter(id => id);
+
+    let ingredientInfo = {};
+    if (ingredientIds.length > 0) {
+      const [ingredientRows] = await db.query(
+        `SELECT ingredient_id, abv FROM ingredient WHERE ingredient_id IN (?)`,
+        [ingredientIds]
+      );
+      ingredientRows.forEach(row => {
+        ingredientInfo[row.ingredient_id] = { abv: row.abv };
+      });
+    }
+
+    // ✅ [4] 도수 계산
+    const ingredientList = [
+      { id: ingredient1_id, amountStr: ingredient1_amount },
+      { id: ingredient2_id, amountStr: ingredient2_amount },
+      { id: ingredient3_id, amountStr: ingredient3_amount },
+      { id: ingredient4_id, amountStr: ingredient4_amount }
+    ].filter(item => item.id);
+
+    const calculatedAbv = calculateAbv(ingredientList, ingredientInfo, glass_type);
+
+    // ✅ [5] 레시피 수정
     const [result] = await db.query(
       `UPDATE cocktail_recipe SET
         name = ?,
@@ -69,15 +154,20 @@ const updateCocktail = async (req, res, next) => {
         ingredient3_id = ?, ingredient3_amount = ?,
         ingredient4_id = ?, ingredient4_amount = ?,
         garnish_id = ?,
-        method = ?, glass_type = ?, abv = ?, summary = ?, comments = ?
-       WHERE recipe_id = ?`,
+        method = ?, glass_type = ?, abv = ?, summary = ?, \`comments\` = ?
+      WHERE recipe_id = ?`,
       [
         name,
-        ingredient1_id, ingredient1_amount,
-        ingredient2_id, ingredient2_amount,
-        ingredient3_id, ingredient3_amount,
-        ingredient4_id, ingredient4_amount,
-        garnish_id, method, glass_type, abv, summary, comments,
+        safeNull(ingredient1_id), safeNull(ingredient1_amount),
+        safeNull(ingredient2_id), safeNull(ingredient2_amount),
+        safeNull(ingredient3_id), safeNull(ingredient3_amount),
+        safeNull(ingredient4_id), safeNull(ingredient4_amount),
+        safeNull(garnish_id),
+        method,
+        glass_type,
+        calculatedAbv,
+        summary,
+        comments,
         recipe_id
       ]
     );
@@ -88,6 +178,7 @@ const updateCocktail = async (req, res, next) => {
 
     res.json({ message: '✅ 레시피가 수정되었습니다.' });
   } catch (error) {
+    logger.error('❌ 레시피 수정 실패:', error);  // ✅ 로거로 기록
     next(createError(500, '❌ 레시피 수정 실패', 'UPDATE_COCKTAIL_FAILED'));
   }
 };
@@ -114,7 +205,7 @@ const deleteCocktail = async (req, res, next) => {
 
 // 4. 유저 시그니처 레시피 조회
 const getUserCocktails = async (req, res, next) => {
-  const userId = req.params.user_id; // parameter에서 userId 추출
+  const userId = req.params.user_id;
 
   try {
     const [rows] = await db.query(`
@@ -149,14 +240,10 @@ const getUserCocktails = async (req, res, next) => {
       ORDER BY cr.created_at DESC
     `, [userId]);
 
-    if (rows.length === 0) {
-      return res.json([]); // 빈 배열 반환
-    }
-
-    res.json(rows);
-  } catch (err) {
-      console.error('❌ 유저 시그니처 칵테일 조회 실패:', err);
-      next(createError(500, '유저 시그니처 칵테일 조회 실패', 'GET_MY_COCKTAILS_FAILED'));
+    res.json(rows); // ✅ 굳이 빈 배열 검사할 필요 없음
+  } catch (error) {
+    logger.error('❌ 유저 시그니처 칵테일 조회 실패:', error);
+    next(createError(500, '유저 시그니처 칵테일 조회 실패', 'GET_MY_COCKTAILS_FAILED'));
   }
 };
 

@@ -1,7 +1,7 @@
 const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator');
-const DEMO_MODE = process.env.DEMO_MODE === 'true';
 const logger = require('../../../utils/logger'); // 로거 유틸리티
+const DEMO_MODE = process.env.DEMO_MODE === 'True';
 
 // 인벤토리 데이터 저장 (해금된 재료)
 // 해금된 재료를 저장하는 API 핸들러

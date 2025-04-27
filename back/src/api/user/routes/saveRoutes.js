@@ -8,7 +8,7 @@ const {
     saveData
   } = require('../controllers/saveController');
 
-//router.use(auth); // 모든 라우트에 auth 미들웨어 적용
+router.use(auth); // 모든 라우트에 auth 미들웨어 적용
 
 router.post('/load', loadData); // 세이브 데이터 불러오기
 

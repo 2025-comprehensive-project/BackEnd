@@ -1,12 +1,15 @@
+const { error } = require('winston');
 const db = require('../../../config/dbConnect');
 const createError = require('../../../utils/errorCreator');
 const logger = require('../../../utils/logger'); // 로거 유틸리티
 
-const DEMO_MODE = process.env.DEMO_MODE === 'true';
+const DEMO_MODE = process.env.DEMO_MODE === 'True';
 
 const loadData = async (req, res, next) => {
   const user_id = DEMO_MODE ? 1 : req.user?.user_id; // ✅ JWT에서 추출
   const { slot_id } = req.body;
+
+  console.log('slot_id:', slot_id); 
 
   if (!slot_id) {
     return next(createError(400, '❌ slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
@@ -38,7 +41,7 @@ const loadData = async (req, res, next) => {
 
     res.json(rows[0]);
   } catch (err) {
-    logger.error('❌ 세이브 데이터 불러오기 오류:', err);
+    console.error('❌ 세이브 데이터 불러오기 오류:', err);
     next(createError(500, '❌ 세이브 데이터 불러오기 실패', 'LOAD_ERROR'));
   }
 };
@@ -53,6 +56,8 @@ const saveData = async (req, res, next) => {
     money,
     reputation_score
   } = req.body;
+
+  console.log('slot_id:', slot_id); 
 
   if (!slot_id) {
     return next(createError(400, '❌ slot_id는 필수입니다.', 'MISSING_SLOT_ID'));
@@ -80,7 +85,7 @@ const saveData = async (req, res, next) => {
       saved_at: new Date().toISOString()
     });
   } catch (err) {
-    logger.error('❌ 세이브 데이터 저장 실패:', err);
+    console.error('❌ 세이브 데이터 저장 실패:', err);
     next(createError(500, '❌ 세이브 저장 실패', 'SAVE_FAILED'));
   }
 };

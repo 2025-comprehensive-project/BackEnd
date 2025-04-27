@@ -8,7 +8,7 @@ const {
     predictUserCocktail
 } = require('../controllers/userCocktailController');
 
-//router.use(auth); // 모든 라우트에 auth 미들웨어 적용
+router.use(auth); // 모든 라우트에 auth 미들웨어 적용
 
 // 유저 시그니처 칵테일 목록 조회
 // GET /api/users/cocktails/signature

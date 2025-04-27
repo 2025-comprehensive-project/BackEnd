@@ -1,94 +1,129 @@
+# ===========================================
+# TinyLlama 한글 대화 데이터 SFT 통합 스크립트
+# (데이터 컨버팅 + 학습까지 한번에)
+# ===========================================
+
+import os
 import json
-from datasets import load_dataset
+import torch
+from datasets import load_dataset, Dataset
 from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
-    Trainer,
-    TrainingArguments,
-    DataCollatorForLanguageModeling
+    BitsAndBytesConfig,
+    TrainingArguments
 )
-from peft import get_peft_model, LoraConfig, TaskType
-import torch
+from peft import LoraConfig
+from trl import SFTTrainer
 
-# ✅ 관리자 웹에서 전달받을 수 있는 주요 하이퍼파라미터 (변수로 분리)
-NUM_EPOCHS = 3
-BATCH_SIZE = 4
-LEARNING_RATE = 5e-5
-LORA_RANK = 8
-LORA_DROPOUT = 0.1
+# ✅ 경로 설정
+raw_train_path = "../data/converted_train.jsonl"          # [원본] input/output 데이터
+raw_val_path = "../data/converted_val.jsonl"
 
-# ✅ 모델 및 토크나이저 로딩
+converted_train_path = "../data/chatConverted_train.jsonl"  # [변환 후] ChatML 포맷
+converted_val_path = "../data/chatConverted_val.jsonl"
+
 model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-tokenizer = AutoTokenizer.from_pretrained(model_id)
+output_dir = "./tinyllama-korean-output"
 
-if torch.cuda.is_available():
-    print(f"✅ CUDA 디바이스: {torch.cuda.get_device_name(0)}")
-    device_map = {"": 0}
-    dtype = torch.float16
-else:
-    print("❌ CUDA 사용 불가. CPU로 전환합니다.")
-    device_map = "auto"
-    dtype = torch.float32
+# ✅ ChatML 포맷 변환 함수
+def convert_to_chatml(input_text, output_text) -> str:
+    return f"<|user|>\n{input_text}</s>\n<|assistant|>\n{output_text}</s>"
 
-model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=dtype, device_map=device_map)
+# ✅ 데이터 컨버팅 함수
+def convert_dataset(raw_path, save_path):
+    new_data = []
+    with open(raw_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            item = json.loads(line)
+            text = convert_to_chatml(item["input"], item["output"])
+            new_data.append({"text": text})
+
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    with open(save_path, 'w', encoding='utf-8') as f:
+        for item in new_data:
+            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    print(f"✅ 변환 완료: {save_path} 저장됨")
+
+# ✅ 원본 데이터 → ChatML 포맷 변환
+convert_dataset(raw_train_path, converted_train_path)
+convert_dataset(raw_val_path, converted_val_path)
+
+# ✅ 데이터 로딩
+def prepare_dataset(jsonl_path):
+    dataset = load_dataset('json', data_files=jsonl_path, split='train')
+    return dataset
+
+train_dataset = prepare_dataset(converted_train_path)
+val_dataset = prepare_dataset(converted_val_path)
+
+# ✅ 모델 + 토크나이저 로딩
+def get_model_and_tokenizer(model_id):
+    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    tokenizer.pad_token = tokenizer.eos_token
+
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.float16,
+        bnb_4bit_use_double_quant=True
+    )
+
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        quantization_config=bnb_config,
+        device_map="auto",
+        trust_remote_code=True
+    )
+
+    model.config.use_cache = False
+    model.config.pretraining_tp = 1
+    return model, tokenizer
+
+model, tokenizer = get_model_and_tokenizer(model_id)
 
 # ✅ LoRA 설정
-lora_config = LoraConfig(
-    task_type=TaskType.CAUSAL_LM,
-    r=LORA_RANK,
+peft_config = LoraConfig(
+    r=8,
     lora_alpha=16,
-    lora_dropout=LORA_DROPOUT,
-    bias="none"
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
 )
-model = get_peft_model(model, lora_config)
 
-# ✅ 데이터 로드
-data_files = {"train": "../data/train.jsonl", "validation": "../data/val.jsonl"}
-dataset = load_dataset("json", data_files=data_files)
-
-def preprocess_conversation(example):
-    conversation = example["messages"]
-    text = "[INST]\n"
-    for msg in conversation:
-        role = msg.get("role", "").capitalize()
-        content = msg.get("content", "")
-        text += f"{role}: {content}\n"
-    text += "[/INST]"
-    return {"text": text}
-
-dataset = dataset.map(preprocess_conversation, remove_columns=["messages"])
-
-def tokenize_function(example):
-    return tokenizer(example["text"], truncation=True, padding="max_length", max_length=512)
-
-tokenized_dataset = dataset.map(tokenize_function, batched=True, remove_columns=["text"])
-
-data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
-
-# ✅ TrainingArguments (명시적 설정 반영)
-training_args = TrainingArguments(
-    output_dir="./tinyllama_finetune_output",
-    per_device_train_batch_size=BATCH_SIZE,
-    per_device_eval_batch_size=BATCH_SIZE,
-    num_train_epochs=NUM_EPOCHS,
-    learning_rate=LEARNING_RATE,
-    evaluation_strategy="epoch",
+# ✅ 학습 인자 설정
+training_arguments = TrainingArguments(
+    output_dir=output_dir,
+    per_device_train_batch_size=2,
+    gradient_accumulation_steps=8,
+    optim="paged_adamw_32bit",
+    learning_rate=2e-4,
+    lr_scheduler_type="cosine",
     save_strategy="epoch",
-    fp16=torch.cuda.is_available(),
-    logging_dir="./logs",
-    save_total_limit=2,
-    report_to="none"
+    evaluation_strategy="epoch",
+    logging_steps=10,
+    num_train_epochs=3,
+    max_steps=250,  # 필요시 조정
+    fp16=True
 )
 
-trainer = Trainer(
+# ✅ SFTTrainer로 학습
+trainer = SFTTrainer(
     model=model,
-    args=training_args,
-    train_dataset=tokenized_dataset["train"],
-    eval_dataset=tokenized_dataset["validation"],
-    data_collator=data_collator,
+    train_dataset=train_dataset,
+    eval_dataset=val_dataset,
+    peft_config=peft_config,
+    dataset_text_field="text",
+    args=training_arguments,
+    tokenizer=tokenizer,
+    packing=False,
+    max_seq_length=512
 )
 
+# ✅ 학습 시작
 trainer.train()
 
-model.save_pretrained("./tinyllama_finetuned")
-tokenizer.save_pretrained("./tinyllama_finetuned")
+# ✅ 학습 후 모델 저장
+trainer.save_model()
+
+print("✅ TinyLlama 한글 대화 전체 파이프라인 완료!")

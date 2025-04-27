@@ -2,7 +2,7 @@
 
 const db = require('../../../config/dbConnect');
 const logger = require('../../../utils/logger'); // 로거 유틸리티
-const DEMO_MODE = process.env.DEMO_MODE === 'true';
+const DEMO_MODE = process.env.DEMO_MODE === 'True';
 
 module.exports = {
   // 자신의 프로필 보기

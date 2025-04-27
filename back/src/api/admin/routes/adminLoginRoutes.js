@@ -10,6 +10,7 @@ const {
 } = require('../controllers/adminLoginController');
 
 router.use(express.urlencoded({ extended: true })); // URL-encoded 데이터 파싱, !!!디버깅용!!!
+const path = require('path'); // 경로 관련 모듈
 
 const adminAuth = require('../../../middlewares/adminAuth'); // JWT 인증 미들웨어
 
@@ -33,69 +34,21 @@ router.get('/info', adminAuth, getAdminInfo);
 // POST /api/admin/forgot-password
 router.post('/forgot-password', sendPasswordResetLink);
 
-// 비밀번호 재설정 (메일 링크 클릭 후, 현재 프론트 페이지가 없어 디버깅용으로 GET 요청을 사용함)
-// router.post('/reset-password', resetPassword);
+// ✅ 정적 HTML로 비밀번호 재설정 페이지 제공
+// GET /api/admin/reset-password
 router.get('/reset-password', (req, res) => {
     const token = req.query.token;
-
+  
     if (!token) {
-        return res.send(`
-            <h3>❌ 유효하지 않은 접근입니다.</h3>
-            <p>이 페이지는 이메일을 통해 발급된 링크로만 접근할 수 있습니다.</p>
-        `);
+      return res.send(`
+        <h3>❌ 유효하지 않은 접근입니다.</h3>
+        <p>이 페이지는 이메일을 통해 발급된 링크로만 접근할 수 있습니다.</p>
+      `);
     }
-
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="ko">
-        <head>
-            <meta charset="UTF-8">
-            <title>비밀번호 재설정</title>
-            <style>
-                body {
-                    font-family: sans-serif;
-                    max-width: 500px;
-                    margin: 50px auto;
-                    padding: 20px;
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                }
-                input {
-                    width: 100%;
-                    padding: 8px;
-                    margin-bottom: 12px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                }
-                button {
-                    padding: 10px 20px;
-                    background-color: #4CAF50;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-                button:hover {
-                    background-color: #45a049;
-                }
-            </style>
-        </head>
-        <body>
-            <h2>🔐 비밀번호 재설정</h2>
-            <form method="POST" action="/api/admin/reset-password">
-                <input type="hidden" name="token" value="${token}" />
-                <label for="newPassword">새 비밀번호:</label>
-                <input type="password" id="newPassword" name="newPassword" required />
-
-                <label for="newPasswordConfirm">비밀번호 확인:</label>
-                <input type="password" id="newPasswordConfirm" name="newPasswordConfirm" required />
-
-                <button type="submit">비밀번호 변경</button>
-            </form>
-        </body>
-        </html>
-    `);
-});
+  
+    // 📌 React 빌드 폴더 기준 경로
+    res.sendFile(path.join(__dirname, '../../../../frontend/build/reset-password.html'));
+  });
 
 // 비밀번호 재설정 (POST 요청)
 // POST /api/admin/reset-password

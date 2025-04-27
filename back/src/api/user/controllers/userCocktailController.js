@@ -8,7 +8,7 @@ const { calculateAbv } = require('../../../utils/abvCalculator');
 //const { parseAmount } = require('../../../utils/flavorCalculator'); // ml 변환 유틸
 
 
-const DEMO_MODE = process.env.DEMO_MODE === 'true';
+const DEMO_MODE = process.env.DEMO_MODE === 'True';
 
 // 1. 유저 시그니처 레시피 조회
 // GET /api/user/cocktails/signature
@@ -190,7 +190,7 @@ const predictUserCocktail = async (req, res, next) => {
     const abv = calculateAbv(ingredients, abvMap, glass_type);
 
     // 🔁 파이썬 예측
-    const scriptPath = path.resolve(__dirname, '../../../ai/cocktail_predictor/scripts/predict_cocktail.py');
+    const scriptPath = path.resolve(__dirname, '../../../../../ai/cocktail_predictor/scripts/predict_cocktail.py');
     const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
     const py = spawn(pythonCmd, [scriptPath]);
     let result = '', error = '';

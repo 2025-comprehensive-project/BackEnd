@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const adminAuth = require('../../../middlewares/adminAuth');
 
-// 📦 컨트롤러 함수들
+// 컨트롤러 함수들
 const {
   getAllUsers,
   getUserInfo,
@@ -12,10 +12,10 @@ const {
   updateUserInfo
 } = require('../controllers/userManagementController');
 
-// 🔐 전체 라우터 보호
+// 전체 라우터 보호
 router.use(adminAuth);
 
-// 📌 명세 기반 라우트
+// 명세 기반 라우트
 
 // 1. 전체 유저 목록 조회
 // GET /api/admin/users
