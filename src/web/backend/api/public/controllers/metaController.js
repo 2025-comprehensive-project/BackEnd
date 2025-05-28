@@ -1,6 +1,6 @@
-const db = require('../../config/dbConnect');
-const createError = require('../../utils/errorCreator');
-const { calculateFlavorAndNotes } = require('../../utils/flavorCalculator');
+const db = require('../../../config/dbConnect');
+const createError = require('../../../utils/errorCreator');
+const { calculateFlavorAndNotes } = require('../../../utils/flavorCalculator');
 
 // 1. 전체 칵테일 레시피 목록 조회
 // GET /api/public/meta/cocktails

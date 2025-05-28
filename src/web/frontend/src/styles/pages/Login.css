@@ -75,10 +75,21 @@
   font-size: 14px;
 }
 
+/* .brand-logo .logo-icon {
+  font-size: 48px;
+  color: #34dbdb;
+  margin-bottom: 12px;
+} */
+
 .brand-logo .logo-icon {
   font-size: 48px;
-  color: #3498db;
+  color: #34badb;
   margin-bottom: 12px;
+  transition: filter 0.3s ease;
+}
+
+.logo-icon:hover {
+  animation: rainbowHue 2s linear infinite;
 }
 
 .login-header {
@@ -143,7 +154,7 @@
 
 .input-icon {
   margin-right: 8px;
-  color: #3498db;
+  color: #53a9e3;
 }
 
 .form-group input {
@@ -214,6 +225,10 @@
   box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
   position: relative;
   overflow: hidden;
+}
+
+.login-submit-btn + .login-submit-btn {
+  margin-top: 14px;
 }
 
 .login-submit-btn::before {
@@ -308,4 +323,9 @@
 @keyframes waveMove2 {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
+}
+
+@keyframes rainbowHue {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
 }

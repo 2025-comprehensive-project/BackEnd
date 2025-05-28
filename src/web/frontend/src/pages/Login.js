@@ -160,6 +160,13 @@
             >
               {isSubmitting ? '로그인 중...' : '로그인'}
             </button>
+            <button
+              type="button"
+              className="login-submit-btn"
+              onClick={() => window.open('/api/public/download/apk', '_blank')}
+            >
+              {isSubmitting ? '다운로드 중...' : 'APK 다운로드'}
+            </button>
           </form>
           
           {/* 하단 정보 */}

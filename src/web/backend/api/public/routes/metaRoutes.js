@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const adminAuth = require('../../middlewares/adminAuth');
+const adminAuth = require('../../../middlewares/adminAuth');
 const {
   getAllCocktails,
   getAllSignatureCocktails,
@@ -10,7 +10,7 @@ const {
   getGarnishes,
   getGarnishById,
   getNoteCategories
-} = require('./metaController');
+} = require('../controllers/metaController');
 
 //public API 라우터, 인증 미들웨어 필요 없음
 //router.use(adminAuth);

@@ -189,10 +189,10 @@ firebase-debug.log
 service-worker.js
 asset-manifest.json
 
-# Production ready HTML (CRA eject 경우)
-index.html
-favicon.ico
-manifest.json
+# # Production ready HTML (CRA eject 경우)
+# index.html
+# favicon.ico
+# manifest.json
 
 # Others
 node_modules/
