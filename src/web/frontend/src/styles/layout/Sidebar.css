@@ -1,0 +1,87 @@
+/* src/styles/Sidebar.css */
+.sidebar {
+  width: 250px;
+  background-color: #3a3a3a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* .sidebar-header .brand-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  cursor: pointer;
+  padding: 16px;
+} */
+
+.sidebar-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 30px;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #4a4a4a;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.menu li.active,
+.menu li:hover {
+  background-color: #4a4a4a;
+}
+
+/* 메뉴 아이템 링크 스타일 통일 */
+.menu-item {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  padding: 15px 20px;
+  width: 100%;
+}
+
+/* 아이콘 스타일 통일 */
+.menu-icon {
+  width: 24px; /* 고정 너비로 모든 아이콘 정렬 */
+  min-width: 24px; /* 최소 너비 보장 */
+  margin-right: 15px; /* 동일한 마진 */
+  font-size: 1.2em; /* 동일한 크기 */
+  text-align: center; /* 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 메뉴 텍스트 스타일 */
+.menu-text {
+  font-size: 1em;
+  line-height: 1.2;
+}
+
+/* 날씨 위젯 컨테이너 */
+.sidebar-footer {
+  margin-top: auto;
+  border-top: 1px solid #4a4a4a;
+  padding: 15px 0;
+  margin-bottom: 20px;
+}

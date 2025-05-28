@@ -1,0 +1,155 @@
+/* src/styles/ai/AIManager.css */
+.ai-manager-container {
+  padding: 20px;
+}
+
+.content-header {
+  margin-bottom: 24px;
+}
+
+.content-header h1 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+.ai-control-section, 
+.ai-test-section, 
+.ai-training-section {
+  margin-bottom: 32px;
+}
+
+.ai-control-section h2, 
+.ai-test-section h2, 
+.ai-training-section h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.model-selector-container {
+  margin-top: 20px;
+}
+
+.model-selector-container h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.training-forms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.base-training, 
+.lora-training {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.base-training h3, 
+.lora-training h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 16px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+/* 학습 오류 메시지 스타일 */
+.training-error-message {
+  margin-bottom: 20px;
+}
+
+.training-error {
+  margin-bottom: 0;
+}
+
+/* 학습 정보 초기화 버튼 스타일 - 추가됨 */
+.reset-training-info {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.reset-btn {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.reset-btn:hover {
+  background-color: #f57c00;
+}
+
+.reset-training-info .form-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* 학습 상태 대시보드 스타일 */
+.training-status-dashboard {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.training-status-dashboard h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.no-active-training {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background-color: #f5f7fa;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.no-active-training p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.no-active-training p:first-child {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.dashboard-content {
+  min-height: 200px;
+}
+
+@media (max-width: 992px) {
+  .training-forms {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

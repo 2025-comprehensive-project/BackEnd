@@ -1,0 +1,311 @@
+/* src/styles/pages/Login.css */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #e4f1f9, #c3e0f7);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 배경에 원형 그라데이션 장식 추가 */
+.login-page::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  top: -100px;
+  right: -100px;
+  border-radius: 50%;
+}
+
+.login-page::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+  bottom: -200px;
+  left: -100px;
+  border-radius: 50%;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 450px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* 브랜드 로고 섹션 */
+.brand-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.brand-logo h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.brand-logo p {
+  margin: 5px 0 0 0;
+  color: #546e7a;
+  font-size: 14px;
+}
+
+.brand-logo .logo-icon {
+  font-size: 48px;
+  color: #3498db;
+  margin-bottom: 12px;
+}
+
+.login-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.login-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #2c3e50;
+}
+
+.login-header p {
+  margin-top: 5px;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+/* 에러 메시지 컨테이너 */
+.error-container {
+  background-color: #fff5f5;
+  color: #e53e3e;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  border-left: 4px solid #e53e3e;
+  animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.error-icon {
+  margin-right: 10px;
+  color: #e53e3e;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.input-icon {
+  margin-right: 8px;
+  color: #3498db;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  background-color: #f7fafc;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-group input:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+  background-color: #fff;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.remember-me label {
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.forgot-password {
+  color: #3498db;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.forgot-password:hover {
+  color: #2980b9;
+  text-decoration: underline;
+}
+
+.login-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-submit-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.6s;
+}
+
+.login-submit-btn:hover {
+  background: linear-gradient(45deg, #2980b9, #3498db);
+  box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+}
+
+.login-submit-btn:hover::before {
+  left: 100%;
+}
+
+.login-submit-btn:disabled {
+  background: linear-gradient(45deg, #a0d2f4, #c4e3f9);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 하단 정보 */
+.login-footer {
+  margin-top: 30px;
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+  }
+  
+  .brand-logo .logo-icon {
+    font-size: 40px;
+  }
+  
+  .brand-logo h1 {
+    font-size: 24px;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 500%;
+  height: 300px;
+  background: url('../../../public/assets/wave.svg') repeat-x;
+  background-size: contain;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  animation: waveScroll 60s linear infinite; 
+}
+
+.wave1 {
+  animation: waveMove1 90s linear infinite;
+  z-index: 0;
+}
+
+.wave2 {
+  animation: waveMove2 120s linear infinite;
+  opacity: 0.3;
+  z-index: 0;
+  background-position-x: -400px;
+  transform: translate(80px, 100px);
+}
+
+/* 움직임 애니메이션 */
+@keyframes waveMove1 {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes waveMove2 {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}

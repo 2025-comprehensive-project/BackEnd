@@ -1,0 +1,4 @@
+{"messages":[{"role":"user","content":"어서 오세요. 바에 처음 오셨나요?"},{"role":"npc","content":"네, 지인 소개로 오게 됐어요."}]}
+{"messages":[{"role":"user","content":"좋은 선택이시네요. 오늘은 어떤 기분이신가요?"},{"role":"npc","content":"음… 상큼하면서도 진한 맛이 땡기네요."}]}
+{"messages":[{"role":"user","content":"그렇다면 문샤인 베이스의 선셋 드림을 추천드릴게요."},{"role":"npc","content":"이름이 멋지네요. 한 잔 부탁드릴게요."}]}
+{"messages":[{"role":"user","content":"금방 만들어드릴게요. 잠시만 기다려주세요."},{"role":"npc","content":"여유로운 이 공간, 마음에 들어요."}]}

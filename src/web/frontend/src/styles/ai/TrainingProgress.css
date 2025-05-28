@@ -1,0 +1,251 @@
+/* src/styles/ai/TrainingProgress.css */
+.training-progress {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.progress-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-title h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-icon {
+  font-size: 14px;
+}
+
+.status-icon.running {
+  color: #2196f3;
+}
+
+.status-icon.completed {
+  color: #4caf50;
+}
+
+.status-icon.failed {
+  color: #f44336;
+}
+
+.status-icon.unknown {
+  color: #ff9800;
+}
+
+.training-time {
+  font-size: 14px;
+  color: #666;
+  text-align: right;
+}
+
+.progress-details {
+  margin-bottom: 20px;
+}
+
+.progress-bar-container {
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #2196f3;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.progress-value {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+.training-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.stat-item {
+  background-color: #f5f5f5;
+  padding: 8px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  font-weight: 500;
+  color: #666;
+  font-size: 14px;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.log-container {
+  margin-top: 20px;
+}
+
+.log-container h4 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.log-output {
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  color: #333;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.training-progress.loading,
+.training-progress.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.loading-icon,
+.error-icon {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.loading-icon {
+  color: #2196f3;
+}
+
+.error-icon {
+  color: #f44336;
+}
+
+.training-progress.error button {
+  margin-top: 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.training-progress.error button:hover {
+  background-color: #d32f2f;
+}
+
+/* 취소 버튼 스타일 */
+.cancel-training-button {
+  margin-left: auto;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+.cancel-btn:disabled {
+  background-color: #ffcdd2;
+  cursor: not-allowed;
+}
+
+/* 취소 오류 메시지 스타일 */
+.cancel-error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cancel-error-message svg {
+  color: #f44336;
+}
+
+/* 학습 완료 버튼 스타일 - 추가됨 */
+.training-complete-actions {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.complete-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.complete-btn:hover {
+  background-color: #388e3c;
+}

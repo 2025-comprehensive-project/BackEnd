@@ -133,8 +133,70 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Character.ai 디렉토리 무시
-src/python/Character.ai/
+# db는 미포함
+web/db
 
 # 데이터 디렉토리 무시
-src/ai/chatbot/data/
+ai/chatbot/data/
+
+# React Build Output
+/build
+/dist
+
+# React Local Configs
+.env.development
+.env.production
+.env.test
+.env.local
+
+# React Cache
+.cache/
+.parcel-cache/
+coverage/
+*.tgz
+
+# IDE Specific
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# React DevTools Profiling
+.react-devtools-profile
+
+# Static asset generated outputs
+*.log
+*.tsbuildinfo
+*.eslintcache
+
+# Firebase / Vite / CRA
+.firebaserc
+firebase-debug.log
+.vite/
+
+# Storybook
+.out/
+.storybook-out/
+
+# Optional react-scripts artifacts
+*.webmanifest
+service-worker.js
+asset-manifest.json
+
+# Production ready HTML (CRA eject 경우)
+index.html
+favicon.ico
+manifest.json
+
+# Others
+node_modules/
+yarn.lock
+package-lock.json
+.pnpm-debug.log*
+npm-debug.log*

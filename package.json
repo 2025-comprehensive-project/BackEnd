@@ -1,9 +1,49 @@
 {
+  "name": "flapper-moonshine-backend",
+  "version": "1.0.0",
+  "description": "Flapper Moonshine 게임의 백엔드 API 서버",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./src/web/backend/server.js",
+    "dev": "nodemon ./src/web/backend/server.js",
+    "register": "node ./src/web/backend/utils/adminSeeder.js",
+    "dev_back": "npx forever start ./src/web/backend/server.js",
+    "dev_stop": "npx forever stop ./src/web/backend/server.js"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mariadb",
+    "flapper-moonshine",
+    "backend"
+  ],
+  "author": "Choi Jae-in of PLA.I.",
+  "license": "MIT",
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "google-auth-library": "^9.15.1",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.14.0",
+    "nodemailer": "^6.10.0",
+    "qs": "^6.14.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.5.1",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "recharts": "^2.15.3",
+    "redis": "^4.7.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "forever": "^4.0.3",
+    "nodemon": "^3.1.9"
   }
 }

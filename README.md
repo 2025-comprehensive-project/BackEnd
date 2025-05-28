@@ -1,235 +1,156 @@
-좋아, 최신 프로젝트 구조와 컨벤션에 맞춰 README를 리팩토링할게. 아래는 수정된 버전이야. 내용 검토 후 수정하거나 추가하고 싶은 부분 알려줘.
-
----
-
-# 🍸 Flapper Moonshine - Backend
+```
+# 🍸 Flapper Moonshine - Backend & AI
 
 **Flapper Moonshine**은 1930년대 금주법 이후의 가상 도시에서  
 칵테일 바를 운영하며 다양한 NPC와 AI 기반 대화를 나누는  
 **서사 중심 시뮬레이션 게임**입니다.
 
-이 레포지토리는 게임의 **백엔드 서버**로,  
-유저 관리 / 관리자 기능 / 칵테일 시스템 / AI 챗봇 응답 및 학습 자동화까지 포함합니다.
+이 레포지토리는 게임의 **백엔드 API 서버 및 AI 학습/응답 시스템**을 포함합니다.
 
 ---
 
 ## 📁 프로젝트 구조
 
 ```
-back/
-├── data/                            # 학습용 데이터셋, SQL 파일 등
+
+PROJECT\_FM/
+├── src/
+│   ├── ai/                      # AI 챗봇 및 예측 모델
+│   │   ├── chatbot/             # Flask 응답 서버 및 LoRA 로딩
+│   │   └── cocktail\_predictor/  # 맛/풍미 예측 모델
+│   │
+│   └── web/                     # 전체 웹 서비스
+│       ├── backend/            # Node.js 기반 REST API 서버
+│       ├── frontend/           # React 기반 관리자 웹 클라이언트
+│       ├── db/                 # MariaDB SQL 스키마/시드
+│       └── logs/               # 백엔드 로그 기록
 │
-├── notebooks/                       # 분석 및 전처리용 Jupyter 노트북
-│
-├── src/                             # Node.js 기반 백엔드 서버
-│   ├── ai/                          # AI 연동 기능
-│   │   └── chatbotProxy.js          # Flask 챗봇 응답 서버 프록시 호출
-│
-│   ├── api/                         # REST API 라우터 및 컨트롤러
-│   │   ├── admin/                   # 관리자 API
-│   │   │   ├── controllers/
-│   │   │   │   ├── aiController.js
-│   │   │   │   ├── cocktailController.js
-│   │   │   │   ├── loginController.js
-│   │   │   │   ├── metaController.js
-│   │   │   │   └── userController.js
-│   │   │   └── routes/
-│   │   │       ├── aiRoutes.js
-│   │   │       ├── cocktailRoutes.js
-│   │   │       ├── metaRoutes.js
-│   │   │       └── userRoutes.js
-│   │   │
-│   │   └── user/                    # 유저 API
-│   │       ├── controllers/
-│   │       │   ├── ingredientController.js
-│   │       │   ├── npcController.js
-│   │       │   ├── profileController.js
-│   │       │   └── saveController.js
-│   │       └── routes/
-│   │           ├── ingredientRoutes.js
-│   │           ├── npcRoutes.js
-│   │           ├── profileRoutes.js
-│   │           └── saveRoutes.js
-│
-│   ├── config/                      # 환경 설정
-│   │   ├── dbConnect.js             # MariaDB 연결
-│   │   └── redisClient.js           # Redis 연결
-│
-│   ├── db/                          # SQL 및 시드 파일
-│   │   ├── schema.sql
-│   │   ├── seed.sql
-│   │   ├── insert_cocktail_recipe.sql
-│   │   └── 기타 삽입용 SQL 파일들
-│
-│   ├── middleware/                 # 공통 미들웨어
-│   │   ├── adminAuth.js            # 관리자 JWT 인증
-│   │   ├── errorHandler.js         # 에러 핸들러
-│   │   └── googleAuth.js           # Google OAuth 관련
-│
-│   ├── services/                   # 서비스 레이어
-│   │   ├── chatService.js
-│   │   └── trainerService.js
-│
-│   ├── utils/                      # 유틸 함수
-│   │   ├── adminSeeder.js
-│   │   ├── errorCreator.js
-│   │   └── logger.js
-│
-│   ├── app.js                      # Express 앱 초기화
-│   └── server.js                   # 서버 실행 진입점
-│
-├── .env                            # 환경 변수 설정 파일
+├── notebooks/                  # Jupyter 기반 실험/분석
+├── .env                        # 환경 변수
+├── venv/                       # Python 가상환경
 ├── .gitignore
 ├── package.json
-├── package-lock.json
 └── README.md
 
-```
-
----
-
-## 🧠 시스템 구성
-
-| 구성 요소 | 설명 |
-|----------|------|
-| `flapper/` | 메인 백엔드 서버, 관리자 API 및 유저 API 제공 |
-| `neo-ai/ai-service` | NPC 챗봇 응답 처리 서버 (TinyLlama 기반) |
-| `neo-ai/ai-trainer` | 대화 로그 기반 LoRA 학습 및 모델 배포 |
-| `data/` | JSONL 데이터 및 SQL 초기 데이터 |
-| `notebooks/` | 데이터 전처리 및 성능 분석 |
-
----
-
-## 🛠 기술 스택
-
-- **Node.js + Express**: REST API 서버
-- **MariaDB**: 게임 및 유저 정보 저장
-- **Redis**: 세션 / 대화 컨텍스트 캐싱
-- **Flask**: AI 응답 서버
-- **PyTorch + Transformers**: TinyLlama 기반 챗봇 학습
-- **JWT + OAuth (Google)**: 유저 인증
-- **Bcrypt**: 비밀번호 해싱
-- **Winston**: 커스텀 로거 (에러/이벤트 기록)
-- **Nodemailer**: 비밀번호 재설정 메일 발송
+````
 
 ---
 
 ## 🚀 실행 방법
 
-### 1. 환경변수 설정
+### 1. 환경 변수 설정 (`.env`)
 
-`.env` 예시 (flapper/src/.env):
+```
+# 서버 포트
+PORT=60003
 
-```env
+# 데이터베이스 설정
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=secret
+DB_PASSWORD=flapper2025
 DB_NAME=Flapper_Moonshine
 
+# 인증 및 외부 서비스
 JWT_SECRET=flapper_secret
 GOOGLE_CLIENT_ID=your_google_client_id
-EMAIL_USER=your_gmail@gmail.com
-EMAIL_PASS=your_gmail_app_pw
-
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_app_pw
 BASE_RESET_URL=http://localhost:3000/reset-password
+
+# 데모 모드 설정 (AI 서버 실행 여부 결정)
+DEMO_MODE=True
 ```
 
 ---
 
-### 2. 서버 실행
+### 2. 전체 서버 실행 (루트 디렉토리 기준)
 
-```bash
-# 1. 백엔드 서버 실행
-cd flapper
+```
 npm install
-npm run dev
+npm run start
+```
 
-# 2. 챗봇 응답 서버 실행 (Flask)
-cd ../neo-ai/ai-service
-python tinyllama_server.py
+* 루트 디렉토리(`PROJECT_FM/`)에서 명령어 한 번으로 전체 백엔드 서버를 실행합니다.
+* `src/web/backend/server.js`를 통해 Node.js API 서버가 실행되며,
+* 내부적으로 **Flask AI 서버 실행 여부는 `.env`의 `DEMO_MODE` 값에 따라 결정됩니다.**
 
-# 3. 챗봇 학습 서버 실행
-cd ../ai-trainer
-python train_launcher.py
+---
+
+### ✅ DEMO\_MODE 동작 방식
+
+| DEMO\_MODE 값 | 동작                                                |
+| ------------ | ------------------------------------------------- |
+| `False`      | `src/ai/chatbot/llama_server.py` 자동 실행 (AI 응답 가능) |
+| `True`       | Flask 서버 미실행 (기본값, 모델 미포함 배포 대응용)                 |
+
+> Git에는 AI 모델 파일이 포함되어 있지 않기 때문에 기본적으로 `DEMO_MODE=True`로 유지되어야 합니다.
+
+---
+
+## 🧠 주요 구성 요소
+
+| 모듈                    | 설명                         |
+| --------------------- | -------------------------- |
+| `backend/`            | 관리자/유저 API, 학습 트리거 및 로그 수집 |
+| `frontend/`           | 관리자용 React 클라이언트           |
+| `chatbot/`            | Flask 기반 TinyLlama 응답 서버   |
+| `cocktail_predictor/` | 랜덤 포레스트 기반 맛 예측기           |
+| `db/`                 | 초기 테이블 및 삽입 SQL            |
+| `logs/`               | 백엔드 학습/운영 로그 기록            |
+| `notebooks/`          | 데이터 분석 및 전처리 실험            |
+
+---
+
+## ✨ 기능 요약
+
+* 관리자 로그인, 유저 관리
+* 칵테일 재료 및 가니시 메타데이터 관리
+* 기본 및 커스텀 레시피 저장 및 추천
+* NPC AI 응답 서버 연동
+* 유저별 대화 저장 및 학습 트리거
+* Flask 모델 핫스왑, 버전 관리
+* BERTScore/BLEU 기반 응답 평가 시스템 포함
+
+---
+
+## 🧠 AI 시스템 흐름도
+
+```
+[유저 ↔ NPC 대화]
+        ↓
+[대화 로그 저장 + 세이브]
+        ↓
+[학습 트리거 → LoRA 학습 (chatbot/)]
+        ↓
+[Flask 응답 서버 → LoRA 어댑터 로딩]
+        ↓
+[실시간 AI 응답 + 버전 캐싱]
 ```
 
 ---
 
-## 📦 주요 기능
+## 📊 사용 기술 스택
 
-- 관리자 로그인, 계정 관리
-- 유저 정보 및 세이브 슬롯 관리
-- 기본 / 커스텀 칵테일 레시피 저장 및 편집
-- 재료 및 가니시 메타데이터 관리
-- AI NPC와의 대화 및 대화 로그 수집
-- AI 학습 요청 / 버전 제어 / 자동 재배포
-
----
-
-## 🔄 AI 학습 흐름도
-
-```text
-[유저 대화 로그 DB]
-        ↓
-[관리자 요청 or 자동 조건 감지]
-        ↓
-[neo-ai/ai-trainer]
-  ↳ 세션 전처리 → LoRA 학습 → 저장
-        ↓
-[neo-ai/ai-service]
-  ↳ 모델 버전 업데이트 → 실시간 응답
-```
+* **Node.js + Express**
+* **React + Axios**
+* **MariaDB + Sequelize**
+* **Redis**
+* **Flask + PyTorch**
+* **Transformers + PEFT**
+* **Nodemailer / Bcrypt / JWT / OAuth(Google)**
 
 ---
 
-## 📚 데이터셋
+## 👤 개발자
 
-- **KoAlpaca v1.1**: Alpaca 스타일 instruction tuning (CC BY-NC 4.0)
-- **KakaoChatData**: 한국어 대화 로그 기반 데이터
-- **Custom NPC 대화 로그**: 게임 내 유저 대화 저장 → 학습용 JSONL 변환
-
----
-
-## ✨ 향후 확장
-
-- NPC별 Fine-tuning + 유저별 LoRA adapter 분기
-- 관리자 UI → 대화 수정 및 수동 학습
-- 성능 평가 지표 도입 (BLEU, BERTScore)
-- AWS EC2 / S3 배포, Docker 기반 인프라 전환
-
----
-
-## 👤 개발 정보
-
-- **백엔드 / AI 서버 / 데이터베이스 설계 및 구현**: **최재인 (Choi Jae-in)**
-
----
-
-## 📚 Dataset Overview
-
-본 프로젝트에서 사용된 AI 학습용 대화 데이터셋은 다음과 같습니다:
-
-### 1. **KoAlpaca v1.1**
-- **설명**: 한국어로 instruction-tuning이 가능한 Alpaca 스타일 대화 데이터셋입니다.
-- **형식**: `{ "instruction": ..., "input": ..., "output": ... }`
-- **출처**: [beomi/KoAlpaca](https://github.com/beomi/KoAlpaca)  
-- **라이선스**: CC BY-NC 4.0 (비상업적 사용에 한해 자유롭게 이용 가능)
-
-### 2. **Kakao 대화 데이터셋**
-- **설명**: 한국어 일상 대화 형식의 커스텀 데이터셋으로, 유저와 시스템 간 대화를 LoRA 학습 포맷에 맞게 재구성하였습니다.
-- **형식**: `{ "messages": [ { "role": "user", "content": ... }, { "role": "assistant", "content": ... } ] }`
-- **출처**: [Ludobico/KakaoChatData](https://github.com/Ludobico/KakaoChatData/tree/main)
-
----
-
-## 🔁 전처리 방식
-- KoAlpaca는 `instruction + output`을 기반으로 `messages` 형식으로 변환
-- Kakao 데이터는 기존 형식에서 LoRA 학습용 JSONL로 재구성
-- 데이터 병합 후 학습용/검증용 세트로 무작위 분할 (`train.jsonl`, `valid.jsonl`)
+* **백엔드 & AI 설계/개발**: 최재인 (Choi Jae-in)
+* **지도교수**: 이병문 교수님 / PLA.I 3팀 (2025 종합설계)
 
 ---
 
 ## 📄 라이선스
 
-본 프로젝트는 개인 연구 및 학습용으로만 사용됩니다.  
-상업적 이용은 허가되지 않으며, 추후 별도 라이선스를 명시할 예정입니다.
+본 프로젝트는 졸업 작품 및 비상업적 학습 목적으로 사용됩니다.
+2차 배포 및 상업적 이용은 금지됩니다.
+
+```

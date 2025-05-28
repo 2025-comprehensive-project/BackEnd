@@ -1,0 +1,153 @@
+/* src/styles/ai/ModelSelector.css */
+.model-category {
+  margin-bottom: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #f5f7fa;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 10px;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.category-header:hover {
+  background-color: #e8ecf0;
+}
+
+.expand-icon {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.category-icon {
+  font-size: 1.1rem;
+  color: #1976d2;
+}
+
+/* 더 강력한 선택자와 !important 사용 */
+.model-category .category-header .category-title {
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  color: #333 !important;
+  position: relative !important;
+  top: 3px !important;
+  margin-top: 2px !important;
+  transform: translateY(2px) !important;
+}
+
+/* 모든 가능한 경우 대비 */
+.category-header span.category-title {
+  position: relative !important;
+  top: 3px !important;
+  margin-top: 2px !important;
+  transform: translateY(2px) !important;
+}
+
+.model-list {
+  padding: 8px 0;
+  border-top: none !important;
+}
+
+.model-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.model-item:hover {
+  background-color: #f1f5f9;
+}
+
+.model-item.selected {
+  background-color: #e3f2fd;
+  border-left: 3px solid #1976d2;
+}
+
+.model-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.base-model-info {
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 3px;
+}
+
+.character-categories {
+  padding: 0;
+  border-top: none !important;
+}
+
+.character-category {
+  margin: 0;
+}
+
+.character-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #f9fafc;
+  cursor: pointer;
+}
+
+.character-name {
+  font-weight: 500;
+  color: #444;
+}
+
+.indented {
+  margin-left: 20px;
+  border-left: 1px dashed #ddd;
+}
+
+.selected-indicator {
+  color: #1976d2;
+  font-size: 1.1rem;
+}
+
+.model-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.delete-btn:hover {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.model-selector-loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}

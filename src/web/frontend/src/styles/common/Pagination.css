@@ -1,0 +1,60 @@
+/* src/styles/Pagination.css */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  gap: 15px;
+}
+
+.pagination button {
+  padding: 8px 16px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.pagination button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.pagination button svg {
+  font-size: 12px;
+}
+
+.pagination button svg:first-child {
+  margin-right: 6px;
+}
+
+.pagination button svg:last-child {
+  margin-left: 6px;
+}
+
+.pagination .page-info {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 활성화된 버튼의 텍스트와 아이콘 색상 */
+.pagination button:not(:disabled) span,
+.pagination button:not(:disabled) svg {
+  color: white;
+}
+
+/* 비활성화된 버튼의 텍스트와 아이콘 색상 */
+.pagination button:disabled span,
+.pagination button:disabled svg {
+  color: white; /* 비활성화 상태에서도 텍스트 색상을 흰색으로 유지 */
+}

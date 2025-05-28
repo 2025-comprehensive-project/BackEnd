@@ -1,0 +1,198 @@
+/* src/styles/ai/ServerControl.css */
+.server-control-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.server-control-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.server-status-section {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* 서버 상태 헤더 수정 - flex 레이아웃 적용 */
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.status-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 새로고침 버튼 스타일 - 간결하게 */
+.refresh-btn {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: auto; /* 내용에 맞게 크기 자동 조정 */
+}
+
+.refresh-btn:hover {
+  background-color: #1976d2;
+}
+
+.refresh-btn:disabled {
+  background-color: #bbdefb;
+  cursor: not-allowed;
+}
+
+.server-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  padding: 10px 15px;
+  border-radius: 6px;
+}
+
+.server-status.running {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.server-status.stopped {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.server-status.unknown {
+  background-color: #fff8e1;
+  color: #f57f17;
+}
+
+.status-icon {
+  font-size: 12px;
+}
+
+.server-status.running .status-icon {
+  color: #4caf50;
+  animation: pulse 1.5s infinite;
+}
+
+.server-status.stopped .status-icon {
+  color: #f44336;
+}
+
+.server-status.unknown .status-icon {
+  color: #ff9800;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.active-model-info {
+  flex: 1;
+  min-width: 250px;
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #2196f3;
+}
+
+.info-icon {
+  color: #2196f3;
+  margin-right: 8px;
+}
+
+.model-info-content {
+  margin-top: 10px;
+}
+
+.model-info-content p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.model-info-content p strong {
+  color: #555;
+  margin-right: 5px;
+}
+
+/* 서버 액션 버튼 레이아웃 수정 */
+.server-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+.start-btn, 
+.stop-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px; /* 패딩 축소 */
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: auto; /* 내용에 맞게 너비 조정 */
+}
+
+.start-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.start-btn:hover {
+  background-color: #388e3c;
+}
+
+.start-btn:disabled {
+  background-color: #c8e6c9;
+  cursor: not-allowed;
+}
+
+.stop-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.stop-btn:hover {
+  background-color: #d32f2f;
+}
+
+.stop-btn:disabled {
+  background-color: #ffcdd2;
+  cursor: not-allowed;
+}

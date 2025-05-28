@@ -1,0 +1,312 @@
+/* src/styles/CocktailList.css */
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.content-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #1a237e;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.add-cocktail-btn {
+  background-color: #1a237e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.add-cocktail-btn svg {
+  margin-right: 8px;
+}
+
+.add-cocktail-btn:hover {
+  background-color: #283593;
+}
+
+.delete-selected-btn {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.delete-selected-btn svg {
+  margin-right: 8px;
+}
+
+.delete-selected-btn:hover {
+  background-color: #c62828;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-group label {
+  font-size: 14px;
+  color: #546e7a;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 200px;
+}
+
+.refresh-btn {
+  margin-left: auto;
+  background-color: #42a5f5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.refresh-btn svg {
+  margin-right: 8px;
+}
+
+.refresh-btn:hover {
+  background-color: #1e88e5;
+}
+
+.refresh-btn:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.error-message svg {
+  margin-right: 8px;
+  color: #f44336;
+}
+
+.table-scroll-wrapper {
+  overflow-x: auto;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+/* 테이블 기본 스타일 */
+.cocktail-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+  font-size: 13px; /* 전체 글자 크기 줄이기 */
+  table-layout: fixed; /* 칼럼 너비 비율 고정 */
+}
+
+.cocktail-table th,
+.cocktail-table td {
+  padding: 10px 5px; /* 모든 셀에 동일한 패딩 적용 */
+  border-bottom: 1px solid #eee;
+  font-size: inherit; /* 상위 테이블 크기를 따르도록 명시 */
+  text-align: center; /* 모든 헤더와 셀을 가운데 정렬 */
+  vertical-align: middle; /* 세로 방향으로도 가운데 정렬 */
+}
+
+.cocktail-table tr:hover td {
+  background-color: #f9f9f9;
+}
+
+/* 칼럼별 너비 최적화 */
+/* 체크박스 칼럼 */
+.cocktail-table th:first-child,
+.cocktail-table td:first-child {
+  width: 40px;
+  text-align: center;
+}
+
+/* 이름 칼럼 - 다른 칼럼과 동일하게 중앙 정렬 */
+.cocktail-table th:nth-child(2),
+.cocktail-table td:nth-child(2) {
+  width: 12%;
+  text-align: center; /* 중앙 정렬로 변경 */
+}
+
+/* 재료 칼럼 - 더 넓게 설정 */
+.cocktail-table th:nth-child(3),
+.cocktail-table td:nth-child(3),
+.cocktail-table th:nth-child(4),
+.cocktail-table td:nth-child(4),
+.cocktail-table th:nth-child(5),
+.cocktail-table td:nth-child(5),
+.cocktail-table th:nth-child(6),
+.cocktail-table td:nth-child(6) {
+  width: 12%;
+  white-space: normal; /* 줄바꿈 허용 */
+  word-break: break-word; /* 단어 단위 줄바꿈 */
+  line-height: 1.3;
+}
+
+/* 가니시 칼럼 */
+.cocktail-table th:nth-child(7),
+.cocktail-table td:nth-child(7) {
+  width: 8%;
+}
+
+/* 메서드, 글라스, 도수, 타입 칼럼 */
+.cocktail-table th:nth-child(8),
+.cocktail-table td:nth-child(8),
+.cocktail-table th:nth-child(9),
+.cocktail-table td:nth-child(9),
+.cocktail-table th:nth-child(10),
+.cocktail-table td:nth-child(10),
+.cocktail-table th:nth-child(11),
+.cocktail-table td:nth-child(11) {
+  width: 6%;
+}
+
+/* 액션 칼럼 */
+.cocktail-table th:last-child,
+.cocktail-table td:last-child {
+  width: 6%;
+  text-align: center;
+}
+
+/* 액션 버튼 컨테이너 정렬 */
+.action-buttons-container {
+  display: flex;
+  justify-content: center; /* 버튼을 가운데 정렬 */
+}
+
+.cocktail-table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.action-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.edit-btn {
+  background-color: #42a5f5;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #1e88e5;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  border: none;
+  background-color: #42a5f5;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+  background-color: #1e88e5;
+}
+
+.pagination button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #546e7a;
+  font-weight: 500;
+}
+
+/* 작은 화면에서 추가 최적화 */
+@media (max-width: 1200px) {
+  .cocktail-table {
+    font-size: 12px;
+  }
+  
+  .cocktail-table th,
+  .cocktail-table td {
+    padding: 8px 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .refresh-btn {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .cocktail-table {
+    font-size: 12px;
+  }
+  
+  .cocktail-table th,
+  .cocktail-table td {
+    padding: 6px 3px;
+  }
+}

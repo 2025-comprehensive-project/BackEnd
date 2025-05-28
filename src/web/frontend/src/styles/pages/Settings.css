@@ -1,0 +1,100 @@
+\/* src/styles/pages/Settings.css */
+.settings-container {
+  padding: 20px;
+}
+
+.settings-header {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.settings-header h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+/* 관리자 정보 수정 섹션 스타일 추가 */
+.admin-info-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.admin-info-section h2 {
+  margin-top: 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.password-change-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.password-change-section h2 {
+  margin-top: 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.update-info-btn,
+.change-password-btn {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.update-info-btn:hover,
+.change-password-btn:hover {
+  background-color: #1565c0;
+}
+
+.update-info-btn:disabled,
+.change-password-btn:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: white;
+  background-color: #f44336;
+}
+
+.success-message {
+  color: white;
+  background-color: #4caf50;
+}
