@@ -128,6 +128,70 @@ npm run start
 
 ---
 
+## 📚 Dataset Overview
+
+본 프로젝트의 AI 모델 학습은 다음과 같은 데이터셋과 전처리 과정을 기반으로 구성됩니다:
+
+### 1. **KoAlpaca-RealQA**
+
+* **설명**: 한국어로 instruction tuning이 가능한 실제 질의응답 데이터셋입니다.
+* **포맷**: `{ "instruction": ..., "input": ..., "output": ... }`
+* **변환 방식**: ChatML 형식으로 전처리하여 사용
+* **출처**: [beomi/KoAlpaca-Polyglot-RealQA](https://huggingface.co/datasets/beomi/KoAlpaca-Polyglot-RealQA)
+
+### 2. **Korean Safe Conversation**
+
+* **설명**: 안전한 대화를 위한 일상적인 질문 응답 한국어 데이터셋입니다.
+* **포맷**: `{ "instruction": ..., "input": ..., "output": ... }`
+* **변환 방식**: 동일하게 ChatML 메시지로 전처리
+* **출처**: [jojo0217/korean\_safe\_conversation](https://huggingface.co/datasets/jojo0217/korean_safe_conversation)
+
+### 3. **Custom NPC Dialogue Dataset**
+
+* **설명**: 게임 내 등장하는 NPC의 성격과 세계관을 반영한 자체 생성 대화 데이터입니다. 각 캐릭터별로 독립된 학습 세트를 구성하며, 모두 ChatML 포맷을 따릅니다.
+* **포맷 예시**:
+
+  ```json
+  {
+    "messages": [
+      { "role": "system", "content": "당신은 솔이라는 이름의 차분하고 냉철한 마피아 보스입니다." },
+      { "role": "user", "content": "오늘은 어떤 날이었나요?" },
+      { "role": "assistant", "content": "오늘은 쓸데없는 피가 안 흘러서 다행이었지." }
+    ]
+  }
+  ```
+* **적용**: 캐릭터별 LoRA 학습용 데이터셋으로 활용
+
+---
+
+## 🔁 전처리 및 학습 파이프라인
+
+### 📌 Base 모델 학습
+
+* **모델**: meta-llama/Llama-3.2-1B
+* **데이터**: KoAlpaca-RealQA, Korean Safe Conversation
+* **형식 변환**:
+
+  * `{instruction, input, output}` → ChatML 메시지 `{ role: ..., content: ... }`
+  * system 프롬프트는 생략하거나 모델 목적에 따라 삽입
+* **출력 경로**: `/models/base/v1.1`
+
+### 📌 LoRA 어댑터 학습
+
+* **대상**: NPC별 개성 반영 (예: 실비아, 솔, 해리, 카네기 등)
+* **입력**: 캐릭터 특화 대화 예시 (ChatML `.jsonl`)
+* **저장 경로**: `/models/lora/{npc_id}-v{version}/`
+* **학습 방식**: PEFT(LoRA) 기반 파인튜닝
+
+### 📌 RoLA 어댑터 학습
+
+* **대상**: 유저별 + 슬롯별 맞춤 적응 학습
+* **입력**: 사용자의 세이브 슬롯에 저장된 대화 로그
+* **저장 경로**: `/models/rola/{npc_id}-{user_id}_{slot_id}/`
+* **특징**: base+LoRA에 추가 적응 학습, 실시간 반영 가능
+
+---
+
 ## 📊 사용 기술 스택
 
 * **Node.js + Express**
