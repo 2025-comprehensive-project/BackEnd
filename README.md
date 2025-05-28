@@ -137,7 +137,7 @@ npm run start
 * **설명**: 한국어로 instruction tuning이 가능한 실제 질의응답 데이터셋입니다.
 * **포맷**: `{ "instruction": ..., "input": ..., "output": ... }`
 * **변환 방식**: ChatML 형식으로 전처리하여 사용
-* **출처**: [beomi/KoAlpaca-Polyglot-RealQA](https://huggingface.co/datasets/beomi/KoAlpaca-Polyglot-RealQA)
+* **출처**: [beomi/KoAlpaca-RealQA](https://huggingface.co/datasets/beomi/KoAlpaca-RealQA)
 
 ### 2. **Korean Safe Conversation**
 
