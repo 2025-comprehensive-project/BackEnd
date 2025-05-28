@@ -1,4 +1,3 @@
-```
 # 🍸 Flapper Moonshine - Backend & AI
 
 **Flapper Moonshine**은 1930년대 금주법 이후의 가상 도시에서  
@@ -152,5 +151,3 @@ npm run start
 
 본 프로젝트는 졸업 작품 및 비상업적 학습 목적으로 사용됩니다.
 2차 배포 및 상업적 이용은 금지됩니다.
-
-```
